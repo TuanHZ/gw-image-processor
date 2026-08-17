@@ -184,7 +184,7 @@ Vì ứng dụng sử dụng **Web Workers** và **ES6 Modules**, bạn nên ch�
 ## 👨‍💻 Tác Giả (Author)
 
 - **Nguyễn Hoàng Anh Tuấn** ([@TuanHZ](https://github.com/TuanHZ))
-- **Email**: nguyentuan02092004@gmail.com
+
 
 ---
 
