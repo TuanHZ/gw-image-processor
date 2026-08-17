@@ -1,0 +1,9 @@
+{
+  "manifest_version": 3,
+  "name": "G&W Image Processor",
+  "version": "1.0",
+  "description": "Chrome Extension for Digital Image Processing based on Gonzalez & Woods.",
+  "action": {
+    "default_popup": "index.html"
+  }
+}

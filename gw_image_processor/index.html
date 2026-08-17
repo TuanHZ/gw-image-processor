@@ -1,0 +1,2502 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>G&W Pixel Lab v2</title>
+  <link rel="stylesheet" href="style.css?v=9">
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header class="app-header">
+    <div class="header-left">
+      <h1 data-i18n="app_title">G&W PIXEL LAB v2</h1>
+      <span class="subtitle" data-i18n="app_subtitle">Professional Image Processing Studio</span>
+    </div>
+    <div class="header-right">
+      <!-- Download dropdown (primary CTA in topbar) -->
+      <div class="download-dropdown-container" id="downloadDropdownContainer">
+        <div class="download-btn-group">
+          <button id="btnDownloadTopbar" class="btn-download-topbar" title="Tải xuống / Download">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            <span data-i18n="btn_download">Download</span>
+          </button>
+          <button id="btnDownloadOptionsToggle" class="btn-download-toggle" title="Tùy chọn tải xuống">
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
+        </div>
+        
+        <!-- Export Options Panel (Popup) -->
+        <div id="exportOptionsPanel" class="export-options-panel">
+          <div class="export-options-header">
+            <span data-i18n="export_options_title">Tùy chọn xuất ảnh</span>
+          </div>
+          <div class="export-option-item">
+            <label data-i18n="export_format_lbl">Định dạng:</label>
+            <div class="format-radio-group">
+              <label><input type="radio" name="exportFormat" value="png" checked> PNG</label>
+              <label><input type="radio" name="exportFormat" value="webp"> WEBP</label>
+              <label><input type="radio" name="exportFormat" value="jpeg"> JPG</label>
+            </div>
+          </div>
+          <div class="export-option-item" id="exportQualityRow" style="display: none;">
+            <div class="quality-label-row">
+              <label data-i18n="export_quality_lbl">Chất lượng:</label>
+              <span id="exportQualityValue">85%</span>
+            </div>
+            <input type="range" id="exportQualitySlider" min="10" max="100" value="85" style="width: 100%;">
+          </div>
+          <div class="export-size-estimation">
+            <span id="exportSizeValue" data-i18n="export_size_estimating">Kích thước ước tính: Đang tính...</span>
+          </div>
+          <button id="btnConfirmExport" class="btn-confirm-export" data-i18n="btn_confirm_export">Xuất file</button>
+        </div>
+      </div>
+      <!-- AI Mode Button (next to Download) -->
+      <button id="btnAIMode" class="btn-ai-mode" title="Chế độ AI Upscale">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path>
+          <path d="M5 3v4M3 5h4M19 17v4M17 19h4"></path>
+        </svg>
+        <span data-i18n="btn_ai_mode">AI Mode</span>
+      </button>
+      <!-- Document Mode Button (next to AI Mode) -->
+      <button id="btnDocMode" class="btn-doc-mode" title="Trích xuất văn bản / Document OCR">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10 9 9 9 8 9"></polyline>
+        </svg>
+        <span data-i18n="btn_doc_mode">Document</span>
+      </button>
+      <button id="btnTheme" class="btn-icon" title="Toggle theme">
+        <svg id="moonIcon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+        <svg id="sunIcon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+          <circle cx="12" cy="12" r="5"></circle>
+          <line x1="12" y1="1" x2="12" y2="3"></line>
+          <line x1="12" y1="21" x2="12" y2="23"></line>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+          <line x1="1" y1="12" x2="3" y2="12"></line>
+          <line x1="21" y1="12" x2="23" y2="12"></line>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+      </button>
+      <button id="btnSettings" class="btn-icon" title="Cài đặt / Settings">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+      </button>
+
+      <!-- Settings Dropdown -->
+      <div id="settingsDropdown" class="settings-dropdown">
+        <div class="setting-item">
+          <label data-i18n="language_label">Ngôn ngữ / Language:</label>
+          <select id="langSelect" class="form-select">
+            <option value="vi">Tiếng Việt</option>
+            <option value="en">English</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <div class="app-container">
+
+    <!-- LEFT SIDEBAR (hidden until image loaded) -->
+    <nav class="left-sidebar" id="leftSidebar" style="display: none;">
+      <div class="sidebar-tools">
+        <button class="sidebar-tool active" data-tool="basic" title="Điều chỉnh / Adjustments">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line>
+            <line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line>
+            <line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line>
+            <line x1="17" y1="16" x2="23" y2="16"></line>
+          </svg>
+          <span class="sidebar-label" data-i18n="sidebar_adjust">Adjust</span>
+        </button>
+        <button class="sidebar-tool" data-tool="edge" title="Biên / Edge">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"></path>
+            <circle cx="12" cy="12" r="3"></circle>
+          </svg>
+          <span class="sidebar-label" data-i18n="sidebar_edge">Edge</span>
+        </button>
+        <button class="sidebar-tool" data-tool="color" title="Màu / Color">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path>
+          </svg>
+          <span class="sidebar-label" data-i18n="sidebar_color">Color</span>
+        </button>
+        <button class="sidebar-tool" data-tool="morph" title="Hình thái / Morph">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+            <path d="M3 3v5h5"></path>
+            <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"></path>
+            <path d="M16 16h5v5"></path>
+          </svg>
+          <span class="sidebar-label" data-i18n="sidebar_morph">Morph</span>
+        </button>
+        <button class="sidebar-tool" data-tool="segment" title="Phân đoạn / Segment">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <circle cx="12" cy="12" r="3"></circle>
+            <line x1="22" y1="12" x2="18" y2="12"></line><line x1="6" y1="12" x2="2" y2="12"></line>
+            <line x1="12" y1="6" x2="12" y2="2"></line><line x1="12" y1="22" x2="12" y2="18"></line>
+          </svg>
+          <span class="sidebar-label" data-i18n="sidebar_segment">Segment</span>
+        </button>
+        <button class="sidebar-tool" data-tool="restore" title="Khôi phục / Restore">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path>
+          </svg>
+          <span class="sidebar-label" data-i18n="sidebar_restore">Restore</span>
+        </button>
+        <button class="sidebar-tool" data-tool="frequency" title="Tần số / Frequency">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+          </svg>
+          <span class="sidebar-label" data-i18n="sidebar_freq">Freq</span>
+        </button>
+        <button class="sidebar-tool" data-tool="analysis" title="Phân tích / Analysis">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="20" x2="18" y2="10"></line>
+            <line x1="12" y1="20" x2="12" y2="4"></line>
+            <line x1="6" y1="20" x2="6" y2="14"></line>
+          </svg>
+          <span class="sidebar-label" data-i18n="sidebar_analysis">Analysis</span>
+        </button>
+      </div>
+      <div class="sidebar-bottom">
+        <div class="sidebar-divider"></div>
+        <button class="sidebar-tool" id="btnUndo" title="Hoàn tác / Undo (Ctrl+Z)" disabled>
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 14 4 9 9 4"></polyline>
+            <path d="M20 20v-7a4 4 0 0 0-4-4H4"></path>
+          </svg>
+        </button>
+        <button class="sidebar-tool" id="btnRedo" title="Làm lại / Redo (Ctrl+Y)" disabled>
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 14 20 9 15 4"></polyline>
+            <path d="M4 20v-7a4 4 0 0 1 4-4h12"></path>
+          </svg>
+        </button>
+      </div>
+    </nav>
+
+    <!-- CENTER: CANVAS AREA -->
+    <div class="canvas-section">
+
+      <!-- Upload Screen (initial state) -->
+      <div id="uploadScreen" class="upload-screen">
+        <div id="dropzone" class="dropzone">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="17 8 12 3 7 8"></polyline>
+            <line x1="12" y1="3" x2="12" y2="15"></line>
+          </svg>
+          <p><strong data-i18n="dropzone_text1">Kéo thả ảnh vào đây</strong></p>
+          <p class="dropzone-formats">JPG · PNG · WEBP · GIF · <span data-i18n="dropzone_maxsize">Tối đa 20MB</span></p>
+          <div class="dropzone-shortcut"><kbd>Ctrl</kbd> + <kbd>V</kbd></div>
+        </div>
+        <div class="sample-images-section">
+          <p class="sample-title" data-i18n="sample_title">Hoặc thử với ảnh mẫu</p>
+          <div class="sample-grid">
+            <button class="sample-thumb" id="sampleGradient" title="Gradient">
+              <canvas width="72" height="72"></canvas>
+            </button>
+            <button class="sample-thumb" id="sampleChecker" title="Checker">
+              <canvas width="72" height="72"></canvas>
+            </button>
+            <button class="sample-thumb" id="sampleColorBars" title="Color Bars">
+              <canvas width="72" height="72"></canvas>
+            </button>
+            <button class="sample-thumb" id="sampleNoise" title="Noise">
+              <canvas width="72" height="72"></canvas>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Canvas View (hidden initially) -->
+      <div id="canvasView" class="studio-workspace" style="display: none;">
+
+        <!-- Toolbar -->
+        <div class="workspace-toolbar">
+          <div class="toolbar-left">
+            <div class="btn-group">
+              <button id="btnModeSplit" class="mode-btn active" title="Split View - kéo thanh chia" data-i18n="btn_split">Split</button>
+              <button id="btnModeSide" class="mode-btn" title="Side-by-side - xem cạnh nhau" data-i18n="btn_side">Side</button>
+            </div>
+            <button id="btnChangeImage" class="btn-change-img" title="Đổi ảnh khác">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 2v6h-6"></path>
+                <path d="M3 12a9 9 0 0 1 15-6.7L21 8"></path>
+                <path d="M3 22v-6h6"></path>
+                <path d="M21 12a9 9 0 0 1-15 6.7L3 16"></path>
+              </svg>
+            </button>
+          </div>
+
+          <div class="toolbar-right">
+            <div class="zoom-controls">
+              <button id="btnZoomOut" class="zoom-btn" title="Thu nhỏ">−</button>
+              <button id="btnZoomLabel" class="zoom-label">100%</button>
+              <button id="btnZoomIn" class="zoom-btn" title="Phóng to">+</button>
+              <button id="btnZoomFit" class="zoom-btn" title="Fit to screen">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 14h6v6M20 10h-6V4M14 10l7-7M10 14l-7 7"></path>
+                </svg>
+              </button>
+              <button id="btnZoomReset" class="zoom-btn" title="Reset 100%">⊡</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filter Chain Visualizer Bar -->
+        <div class="filter-chain-bar" id="filterChainBar" style="display: none;" aria-label="Pipeline">
+          <span class="filter-chain-title">Pipeline:</span>
+          <div class="filter-chain-container" id="filterChainContainer"></div>
+        </div>
+
+        <!-- Canvas Area -->
+        <div class="workspace-canvas-area mode-split" id="canvasArea">
+          <div class="pane pane-original">
+            <span class="pane-label">Original</span>
+            <canvas id="canvasOriginal"></canvas>
+          </div>
+          <div class="pane pane-processed">
+            <span class="pane-label pane-label-right">Result</span>
+            <canvas id="canvasProcessed"></canvas>
+            <div id="canvasLoadingOverlay" class="canvas-loading-overlay" style="display: none;">
+              <div class="canvas-spinner"></div>
+              <span>Đang xử lý...</span>
+            </div>
+          </div>
+          <div class="slider-divider" id="sliderDivider">
+            <div class="slider-thumb">↔</div>
+          </div>
+          <button id="floatCompareBtn" class="float-compare-btn" title="Nhấn giữ để xem ảnh Gốc">👁 Gốc</button>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- RIGHT: CONTROL PANEL (30%) - TAB BASED -->
+    <div class="control-panel-v2" id="controlPanel" style="display: none;">
+
+      <!-- HISTOGRAM PANEL -->
+      <div class="histogram-panel">
+        <div class="histogram-header">
+          <span class="histogram-title">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="20" x2="18" y2="10"></line>
+              <line x1="12" y1="20" x2="12" y2="4"></line>
+              <line x1="6" y1="20" x2="6" y2="14"></line>
+            </svg>
+            <span data-i18n="histogram_title">Histogram</span>
+          </span>
+          <span id="histogramInfo" class="histogram-info"></span>
+        </div>
+        <canvas id="histogramCanvas" width="256" height="100"></canvas>
+      </div>
+
+      <!-- RIGHT PANEL MAIN TABS -->
+      <div class="right-panel-tabs">
+        <button class="panel-tab-btn active" data-panel-tab="properties" data-i18n="panel_tab_properties">Thuộc tính</button>
+        <button class="panel-tab-btn" data-panel-tab="analysis" data-i18n="panel_tab_analysis">Phân tích</button>
+        <button class="panel-tab-btn" data-panel-tab="history" data-i18n="panel_tab_history">Lịch sử</button>
+      </div>
+
+      <!-- SCROLLABLE TAB PANEL CONTENT CONTAINER -->
+      <div class="panel-tab-content-wrapper">
+
+        <!-- TAB 1: PROPERTIES (CONTAINS PRESETS AND MODULE SLIDERS) -->
+        <div class="panel-tab-content active" id="panel-tab-properties">
+          
+          <!-- NEW PRESET SYSTEM PANEL (Moved inside Properties) -->
+          <div class="preset-system-section">
+            <div class="preset-header">
+              <span class="preset-title">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+                </svg>
+                <span data-i18n="sec_preset_system">Thiết lập sẵn (Presets)</span>
+              </span>
+            </div>
+            <div class="preset-controls">
+              <select id="presetDropdown" class="form-select">
+                <option value="" data-i18n="opt_no_preset">-- Chọn thiết lập sẵn --</option>
+                <option value="preset_default" data-i18n="preset_default">Mặc định</option>
+                <option value="preset_sharp_light" data-i18n="preset_sharp_light">Làm nét nhẹ</option>
+                <option value="preset_contrast_boost" data-i18n="preset_contrast_boost">Tăng tương phản</option>
+              </select>
+              <div class="preset-actions-row">
+                <button id="btnSaveNewPreset" class="preset-action-btn save-btn" data-i18n="btn_save_preset">Lưu</button>
+                <span class="preset-actions-divider"></span>
+                <button id="btnDeleteNewPreset" class="preset-action-btn delete-btn" disabled data-i18n="btn_delete_preset">Xóa</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- PROPERTIES SLIDERS MODULES CONTAINER -->
+          <div class="properties-module-container">
+
+        <!-- TAB 1: BASIC -->
+        <div class="tab-content active" id="basic-tab">
+
+          <!-- Brightness Section -->
+          <div class="filter-section">
+            <button class="section-header" data-section="brightness">
+              <span class="section-title">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="section-icon">
+                  <circle cx="12" cy="12" r="4"></circle>
+                  <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
+                </svg>
+                <span data-i18n="sec_brightness">Brightness</span>
+              </span>
+              <span class="toggle-icon">−</span>
+            </button>
+            <div class="section-content open">
+              <div class="filter-buttons">
+                <button class="filter-btn" data-filter="histEq">Auto Bright</button>
+                <button class="filter-btn" data-filter="clahe">CLAHE</button>
+              </div>
+              <div class="slider-row">
+                <label for="gammaSlider" title="Gamma">Gamma</label>
+                <input type="range" id="gammaSlider" min="0.1" max="5.0" step="0.1" value="1.0">
+                <input type="number" id="gammaValue" class="slider-value" min="0.1" max="5.0" step="0.1" value="1.0">
+              </div>
+              <div class="slider-row">
+                <label for="claheClipSlider" title="CLAHE Clip">CLAHE Clip</label>
+                <input type="range" id="claheClipSlider" min="0.5" max="4.0" step="0.1" value="2.0">
+                <input type="number" id="claheClipValue" class="slider-value" min="0.5" max="4.0" step="0.1" value="2.0">
+              </div>
+            </div>
+          </div>
+
+          <!-- Contrast Section -->
+          <div class="filter-section">
+            <button class="section-header" data-section="contrast">
+              <span class="section-title">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="section-icon">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <path d="M12 2v20a10 10 0 0 0 0-20z" fill="currentColor" opacity="0.3"></path>
+                </svg>
+                <span data-i18n="sec_contrast">Làm nét & Khử nhiễu</span>
+              </span>
+              <span class="toggle-icon">−</span>
+            </button>
+            <div class="section-content open">
+              <div class="filter-buttons">
+                <button class="filter-btn" data-filter="denoiseSharpen" data-i18n="btn_denoise_sharpen">Khử nhiễu & Làm nét</button>
+              </div>
+              <div class="slider-row">
+                <label for="sharpnessStrengthSlider" title="Strength" data-i18n="lbl_strength">Mức độ (Strength)</label>
+                <input type="range" id="sharpnessStrengthSlider" min="0" max="100" step="1" value="50">
+                <input type="number" id="sharpnessStrengthValue" class="slider-value" min="0" max="100" step="1" value="50">
+              </div>
+            </div>
+          </div>
+
+          <!-- Denoise Section -->
+          <div class="filter-section">
+            <button class="section-header" data-section="denoise">
+              <span class="section-title">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="section-icon">
+                  <path d="M20 20H7a4 4 0 0 1-4-4V9a1 1 0 0 1 .3-.7l9-9a1 1 0 0 1 1.4 0l7 7a1 1 0 0 1 0 1.4L10.5 18H20"></path>
+                  <path d="M19 14.5L10.5 6"></path>
+                </svg>
+                <span data-i18n="sec_denoise">Denoise</span>
+              </span>
+              <span class="toggle-icon">−</span>
+            </button>
+            <div class="section-content open">
+              <div class="filter-buttons">
+                <button class="filter-btn" data-filter="median">Median</button>
+                <button class="filter-btn" data-filter="bilateral">Bilateral</button>
+              </div>
+              <div class="slider-row">
+                <label for="bilateralSigmaSlider" title="Bilateral Color">Bilateral Color</label>
+                <input type="range" id="bilateralSigmaSlider" min="5" max="100" step="5" value="25">
+                <input type="number" id="bilateralSigmaValue" class="slider-value" min="5" max="100" step="5" value="25">
+              </div>
+            </div>
+          </div>
+
+          <!-- Utilities Section -->
+          <div class="filter-section">
+            <button class="section-header" data-section="utilities">
+              <span class="section-title">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="section-icon">
+                  <line x1="4" y1="21" x2="4" y2="14"></line>
+                  <line x1="4" y1="10" x2="4" y2="3"></line>
+                  <line x1="12" y1="21" x2="12" y2="12"></line>
+                  <line x1="12" y1="8" x2="12" y2="3"></line>
+                  <line x1="20" y1="21" x2="20" y2="16"></line>
+                  <line x1="20" y1="12" x2="20" y2="3"></line>
+                  <line x1="1" y1="14" x2="7" y2="14"></line>
+                  <line x1="9" y1="8" x2="15" y2="8"></line>
+                  <line x1="17" y1="16" x2="23" y2="16"></line>
+                </svg>
+                <span data-i18n="sec_utilities">Utilities</span>
+              </span>
+              <span class="toggle-icon">−</span>
+            </button>
+            <div class="section-content open">
+              <div class="filter-buttons">
+                <button class="filter-btn" data-filter="grayscale">Grayscale</button>
+                <button class="filter-btn" data-filter="negative">Negative</button>
+                <button class="filter-btn" data-filter="gamma">Gamma</button>
+                <button class="filter-btn" data-filter="log">Log Transform</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Resampling & Scale Section -->
+          <div class="filter-section">
+            <button class="section-header" data-section="resampling">
+              <span class="section-title">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="section-icon">
+                  <path d="M15 3h6v6"></path>
+                  <path d="M9 21H3v-6"></path>
+                  <path d="M21 3l-7 7"></path>
+                  <path d="M3 21l7-7"></path>
+                </svg>
+                <span data-i18n="sec_resampling">Resampling & Scale</span>
+              </span>
+              <span class="toggle-icon">−</span>
+            </button>
+            <div class="section-content open">
+              <div class="filter-buttons">
+                <button class="filter-btn" data-filter="nn2x" title="Phóng to 2x giữ nguyên viền pixel thô">Nearest Neighbor 2x</button>
+                <button class="filter-btn" data-filter="scale2x" title="Làm mượt pixel cơ bản bằng Scale2x">Scale2x (Nhẹ)</button>
+                <button class="filter-btn" data-filter="hq2x" title="Khử răng cưa HQ2x (chất lượng cao)">HQ2x (Nhẹ)</button>
+                <button class="filter-btn" data-filter="scale4x" title="Làm mượt pixel siêu cấp bằng Scale4x (Chạy 2 lần)">Scale4x (Mạnh)</button>
+                <button class="filter-btn" data-filter="hq4x" title="Khử răng cưa siêu mượt HQ4x (Chạy 2 lần)">HQ4x (Mạnh)</button>
+              </div>
+              <p style="font-size: 0.82rem; opacity: 0.6; margin-top: 8px; line-height: 1.5;">Scale2x và HQ2x chỉ hiệu quả với Pixel Art sắc nét. Nếu ảnh mờ, hãy dùng Otsu Threshold để làm nét viền trước.</p>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- TAB 2: EDGE DETECTION -->
+        <div class="tab-content" id="edge-tab">
+
+          <div class="filter-section">
+            <button class="section-header" data-section="edges">
+              <span class="section-title">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="section-icon">
+                  <path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+                <span data-i18n="sec_edges">Edge Detection Filters</span>
+              </span>
+              <span class="toggle-icon">−</span>
+            </button>
+            <div class="section-content open">
+              <div class="filter-buttons">
+                <button class="filter-btn" data-filter="sobel">Sobel Edge</button>
+                <button class="filter-btn" data-filter="prewittEdge">Prewitt Edge</button>
+                <button class="filter-btn" data-filter="cannyEdge">Canny Edge</button>
+                <button class="filter-btn" data-filter="robertsEdge">Roberts Edge</button>
+              </div>
+              <div class="slider-row">
+                <label for="cannyLowSlider" title="Canny Low">Canny Low</label>
+                <input type="range" id="cannyLowSlider" min="0" max="255" step="5" value="50">
+                <input type="number" id="cannyLowValue" class="slider-value" min="0" max="255" step="5" value="50">
+              </div>
+              <div class="slider-row">
+                <label for="cannyHighSlider" title="Canny High">Canny High</label>
+                <input type="range" id="cannyHighSlider" min="0" max="255" step="5" value="150">
+                <input type="number" id="cannyHighValue" class="slider-value" min="0" max="255" step="5" value="150">
+              </div>
+            </div>
+          </div>
+
+          <!-- Phase 10: Hough Transform -->
+          <div class="filter-section">
+            <button class="section-header" data-section="hough">
+              <span class="section-title">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="section-icon">
+                  <path d="M21 16V8a2 2 0 0 0-2-2h-5c-1.1 0-2 .9-2 2v14"></path>
+                  <path d="M3 20V4a2 2 0 0 1 2-2h5c1.1 0 2 .9 2 2v16"></path>
+                </svg>
+                <span data-i18n="sec_hough">Hough Transform</span>
+              </span>
+              <span class="toggle-icon">+</span>
+            </button>
+            <div class="section-content">
+              <div class="filter-buttons">
+                <button class="filter-btn" data-filter="houghLines">Hough Lines</button>
+              </div>
+              <div class="slider-row">
+                <label for="houghLinesSlider" title="Max Lines" data-i18n="lbl_hough_lines">Max Lines</label>
+                <input type="range" id="houghLinesSlider" min="5" max="30" step="1" value="15">
+                <input type="number" id="houghLinesValue" class="slider-value" min="5" max="30" step="1" value="15">
+              </div>
+            </div>
+          </div>
+
+          <div class="filter-section">
+            <button class="section-header" data-section="artistic">
+              <span class="section-title">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="section-icon">
+                  <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 14.7255 3.09032 17.1962 4.85857 19C5.32145 19.4629 5.37894 20.2044 5.03457 20.7329C4.60411 21.3934 4.82142 22 5.5 22H12Z"></path>
+                  <circle cx="7.5" cy="10.5" r="1.5" fill="currentColor"></circle>
+                  <circle cx="11.5" cy="7.5" r="1.5" fill="currentColor"></circle>
+                  <circle cx="16.5" cy="9.5" r="1.5" fill="currentColor"></circle>
+                </svg>
+                <span data-i18n="sec_artistic">Artistic Effects</span>
+              </span>
+              <span class="toggle-icon">+</span>
+            </button>
+            <div class="section-content">
+              <div class="filter-buttons">
+                <button class="filter-btn" data-filter="scanDocument" data-i18n="btn_scan_doc">Document Scan</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- TAB 3: COLOR -->
+        <div class="tab-content" id="color-tab">
+
+          <!-- Retinex Section -->
+          <div class="filter-section">
+            <button class="section-header" data-section="colortools">
+              <span class="section-title">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="section-icon">
+                  <path d="M9.09 9.09L3 11l6.09 1.91L11 19l1.91-6.09L19 11l-6.09-1.91L11 3zM18.5 18.5L16 19.25l2.5.75.75 2.5.75-2.5 2.5-.75-2.5-.75-.75-2.5z"></path>
+                </svg>
+                <span data-i18n="sec_color_restoration">Color Restoration</span>
+              </span>
+              <span class="toggle-icon">−</span>
+            </button>
+            <div class="section-content open">
+              <div class="filter-buttons">
+                <button class="filter-btn" data-filter="retinex">Retinex</button>
+              </div>
+              <div class="slider-row">
+                <label for="retinexScalesSlider" title="Retinex Scales">Retinex Scales</label>
+                <input type="range" id="retinexScalesSlider" min="1" max="5" step="1" value="3">
+                <input type="number" id="retinexScalesValue" class="slider-value" min="1" max="5" step="1" value="3">
+              </div>
+            </div>
+          </div>
+
+          <!-- White Balance Section (Phase 4) -->
+          <div class="filter-section">
+            <button class="section-header" data-section="whitebalance">
+              <span class="section-title">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="section-icon">
+                  <path d="M22 7h-6M8 7H2M12 2v20M20 7c0 3-3 5-3 5s-3-2-3-5M10 7c0 3-3 5-3 5S4 10 4 7"></path>
+                  <path d="M17 19c0 1.66-2 3-5 3s-5-1.34-5-3"></path>
+                </svg>
+                <span data-i18n="sec_white_balance">White Balance</span>
+              </span>
+              <span class="toggle-icon">−</span>
+            </button>
+            <div class="section-content open">
+              <div class="filter-buttons">
+                <button class="filter-btn" data-filter="whiteBalance">Gray World</button>
+                <button class="filter-btn" data-filter="whiteBalanceMax">Max White</button>
+              </div>
+              <div class="slider-row">
+                <label for="wbStrengthSlider" title="Strength">Strength</label>
+                <input type="range" id="wbStrengthSlider" min="0.1" max="2.0" step="0.1" value="1.0">
+                <input type="number" id="wbStrengthValue" class="slider-value" min="0.1" max="2.0" step="0.1" value="1.0">
+              </div>
+              <p style="font-size: 0.82rem; opacity: 0.6; margin-top: 8px; line-height: 1.5;">Gray World: Cân bằng màu theo giả định ảnh có màu trung bình là xám (G&W Ch. 6.3)</p>
+            </div>
+          </div>
+
+          <!-- Color Adjustments Section (Phase 5) -->
+          <div class="filter-section">
+            <button class="section-header" data-section="coloradjust">
+              <span class="section-title">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="section-icon">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <path d="M12 6a6 6 0 0 1 6 6M12 9a3 3 0 0 1 3 3"></path>
+                </svg>
+                <span data-i18n="sec_color_adjust">Color Adjustments</span>
+              </span>
+              <span class="toggle-icon">−</span>
+            </button>
+            <div class="section-content open">
+              <div class="slider-row">
+                <label for="hueSlider" title="Hue">Hue</label>
+                <input type="range" id="hueSlider" min="-180" max="180" step="1" value="0">
+                <input type="number" id="hueValue" class="slider-value" min="-180" max="180" step="1" value="0">
+              </div>
+              <div class="slider-row">
+                <label for="saturationSlider" title="Saturation">Saturation</label>
+                <input type="range" id="saturationSlider" min="0" max="3" step="0.1" value="1.0">
+                <input type="number" id="saturationValue" class="slider-value" min="0" max="3" step="0.1" value="1.0">
+              </div>
+              <div class="slider-row">
+                <label for="vibranceSlider" title="Vibrance">Vibrance</label>
+                <input type="range" id="vibranceSlider" min="-100" max="100" step="1" value="0">
+                <input type="number" id="vibranceValue" class="slider-value" min="-100" max="100" step="1" value="0">
+              </div>
+              <div class="filter-buttons">
+                <button class="filter-btn" data-filter="colorAdjust">Apply Adjustments</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Color Space Section (Phase 4-5) -->
+          <div class="filter-section">
+            <button class="section-header" data-section="colorspace">
+              <span class="section-title">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="section-icon">
+                  <polyline points="16 3 21 3 21 8"></polyline>
+                  <line x1="4" y1="20" x2="21" y2="3"></line>
+                  <polyline points="21 16 21 21 16 21"></polyline>
+                  <line x1="15" y1="15" x2="21" y2="21"></line>
+                  <line x1="4" y1="4" x2="9" y2="9"></line>
+                </svg>
+                <span data-i18n="sec_color_space">Color Space & Slicing</span>
+              </span>
+              <span class="toggle-icon">+</span>
+            </button>
+            <div class="section-content">
+              <div class="filter-buttons">
+                <button class="filter-btn" data-filter="hsvView">HSV Visualize</button>
+                <button class="filter-btn" data-filter="colorSlicing">Color Slicing</button>
+                <button class="filter-btn" data-filter="colorQuant">Color Quant</button>
+              </div>
+              <div class="slider-row">
+                <label for="colorSlicingHueSlider" title="Target Hue">Target Hue</label>
+                <input type="range" id="colorSlicingHueSlider" min="0" max="360" step="1" value="0">
+                <input type="number" id="colorSlicingHueValue" class="slider-value" min="0" max="360" step="1" value="0">
+              </div>
+              <div class="slider-row">
+                <label for="colorSlicingRangeSlider" title="Hue Range">Hue Range</label>
+                <input type="range" id="colorSlicingRangeSlider" min="5" max="180" step="1" value="30">
+                <input type="number" id="colorSlicingRangeValue" class="slider-value" min="5" max="180" step="1" value="30">
+              </div>
+              <p style="font-size: 0.82rem; opacity: 0.6; margin-top: 8px; line-height: 1.5;">Color Slicing: Chỉ giữ lại vùng màu đã chọn, các màu khác chuyển sang xám.</p>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- TAB 4: MORPHOLOGY -->
+        <div class="tab-content" id="morph-tab">
+
+          <div class="filter-section">
+            <button class="section-header" data-section="morphology">
+              <span class="section-title">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="section-icon">
+                  <path d="M17 1l4 4-4 4"></path>
+                  <path d="M3 11V9a4 4 0 0 1 4-4h14"></path>
+                  <path d="M7 23l-4-4 4-4"></path>
+                  <path d="M21 13v2a4 4 0 0 1-4 4H3"></path>
+                </svg>
+                <span data-i18n="sec_morph_ops">Morphological Operations</span>
+              </span>
+              <span class="toggle-icon">−</span>
+            </button>
+            <div class="section-content open">
+              <div class="filter-buttons">
+                <button class="filter-btn" data-filter="erosion" data-i18n="btn_erosion">Erosion</button>
+                <button class="filter-btn" data-filter="dilation" data-i18n="btn_dilation">Dilation</button>
+                <button class="filter-btn" data-filter="opening" data-i18n="btn_opening">Opening</button>
+                <button class="filter-btn" data-filter="closing" data-i18n="btn_closing">Closing</button>
+                <button class="filter-btn" data-filter="adaptiveThresh" data-i18n="btn_adaptive">Adaptive</button>
+                <button class="filter-btn" data-filter="hitOrMiss">Hit-or-Miss</button>
+                <button class="filter-btn" data-filter="boundaryExtraction" data-i18n="btn_boundary">Boundary</button>
+                <button class="filter-btn" data-filter="thinning" data-i18n="btn_thinning">Thinning</button>
+                <button class="filter-btn" data-filter="thickening" data-i18n="btn_thickening">Thickening</button>
+                <button class="filter-btn" data-filter="pruning" data-i18n="btn_pruning">Pruning</button>
+                <button class="filter-btn" data-filter="morphRecon" data-i18n="btn_morph_recon">Morph Recon</button>
+                <button class="filter-btn" data-filter="distanceTransform" data-i18n="btn_distance_transform">Distance Trans</button>
+              </div>
+              <div class="slider-row">
+                <label for="thresholdBlockSlider" title="Block Size" data-i18n="lbl_block_size">Block Size</label>
+                <input type="range" id="thresholdBlockSlider" min="3" max="31" step="2" value="7">
+                <input type="number" id="thresholdBlockValue" class="slider-value" min="3" max="31" step="2" value="7">
+              </div>
+              <p style="font-size: 0.85rem; opacity: 0.6; margin-top: 10px;" data-i18n="desc_morph">Opening: Removes small objects | Closing: Fills small holes</p>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- TAB 5: SEGMENTATION -->
+        <div class="tab-content" id="segment-tab">
+
+          <!-- Otsu Threshold Section -->
+          <div class="filter-section">
+            <button class="section-header" data-section="otsu">
+              <span class="section-title">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="section-icon">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <circle cx="12" cy="12" r="6"></circle>
+                  <circle cx="12" cy="12" r="2"></circle>
+                </svg>
+                <span data-i18n="sec_auto_threshold">Auto Threshold</span>
+              </span>
+              <span class="toggle-icon">−</span>
+            </button>
+            <div class="section-content open">
+              <div class="filter-buttons">
+                <button class="filter-btn" data-filter="otsuThreshold">Otsu Thresh</button>
+                <button class="filter-btn" data-filter="otsuColor">Otsu Color</button>
+              </div>
+              <p style="font-size: 0.82rem; opacity: 0.6; margin-top: 8px; line-height: 1.5;">Otsu tự động tìm ngưỡng tối ưu phân tách foreground/background (G&W Ch. 10.3)</p>
+            </div>
+          </div>
+
+          <!-- Region Growing Section -->
+          <div class="filter-section">
+            <button class="section-header" data-section="regiongrowing">
+              <span class="section-title">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="section-icon">
+                  <circle cx="18" cy="18" r="3"></circle>
+                  <circle cx="6" cy="6" r="3"></circle>
+                  <circle cx="6" cy="18" r="3"></circle>
+                  <path d="M18 15V9a4 4 0 0 0-4-4H9M6 9v6"></path>
+                </svg>
+                <span data-i18n="sec_region_growing">Region Growing & Clustering</span>
+              </span>
+              <span class="toggle-icon">−</span>
+            </button>
+            <div class="section-content open">
+              <div class="filter-buttons">
+                <button class="filter-btn" data-filter="regionGrowing">Region Grow</button>
+                <button class="filter-btn" data-filter="kmeansSeg">K-Means Seg</button>
+              </div>
+              <div class="slider-row">
+                <label for="regionThreshSlider" title="Tolerance" data-i18n="lbl_tolerance">Tolerance</label>
+                <input type="range" id="regionThreshSlider" min="5" max="100" step="5" value="30">
+                <input type="number" id="regionThreshValue" class="slider-value" min="5" max="100" step="5" value="30">
+              </div>
+              <div class="slider-row">
+                <label for="kmeansKSlider" title="K Clusters" data-i18n="lbl_k_clusters">K Clusters</label>
+                <input type="range" id="kmeansKSlider" min="2" max="8" step="1" value="4">
+                <input type="number" id="kmeansKValue" class="slider-value" min="2" max="8" step="1" value="4">
+              </div>
+              <p style="font-size: 0.82rem; opacity: 0.6; margin-top: 8px; line-height: 1.5;">Region Grow: Phân vùng từ seed points. K-Means: Phân cụm màu sắc (G&W Ch. 10.4)</p>
+            </div>
+          </div>
+
+          <!-- Watershed Section -->
+          <div class="filter-section">
+            <button class="section-header" data-section="watershed">
+              <span class="section-title">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="section-icon">
+                  <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path>
+                </svg>
+                <span data-i18n="sec_watershed">Watershed Segmentation</span>
+              </span>
+              <span class="toggle-icon">−</span>
+            </button>
+            <div class="section-content open">
+              <div class="filter-buttons">
+                <button class="filter-btn" data-filter="watershed">Watershed</button>
+              </div>
+              <div class="slider-row">
+                <label for="watershedMarkersSlider" title="Markers">Markers</label>
+                <input type="range" id="watershedMarkersSlider" min="2" max="50" step="1" value="5">
+                <input type="number" id="watershedMarkersValue" class="slider-value" min="2" max="50" step="1" value="5">
+              </div>
+              <p style="font-size: 0.82rem; opacity: 0.6; margin-top: 8px; line-height: 1.5;">Watershed: Phân hoạch vùng nước dựa trên cực tiểu cục bộ và độ cao địa hình (G&W Ch. 10.5)</p>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- TAB 6: RESTORATION -->
+        <div class="tab-content" id="restore-tab">
+
+          <div class="filter-section">
+            <button class="section-header" data-section="restoration">
+              <span class="section-title">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="section-icon">
+                  <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path>
+                  <path d="M21 3v5h-5M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path>
+                  <path d="M3 21v-5h5"></path>
+                </svg>
+                <span data-i18n="sec_restoration">Image Restoration</span>
+              </span>
+              <span class="toggle-icon">+</span>
+            </button>
+            <div class="section-content open">
+              <div class="filter-buttons">
+                <button class="filter-btn" data-filter="arithmeticMean" data-i18n="btn_arith_mean">Arithmetic Mean</button>
+                <button class="filter-btn" data-filter="geometricMean" data-i18n="btn_geo_mean">Geometric Mean</button>
+                <button class="filter-btn" data-filter="contraHarmonic" data-i18n="btn_contra_mean">Contra-harmonic</button>
+                <button class="filter-btn" data-filter="adaptiveMedian" data-i18n="btn_adapt_median">Adaptive Median</button>
+              </div>
+              <div class="slider-row">
+                <label for="meanSizeSlider" title="Kernel Size" data-i18n="lbl_kernel_size">Kernel Size</label>
+                <input type="range" id="meanSizeSlider" min="3" max="15" step="2" value="3">
+                <input type="number" id="meanSizeValue" class="slider-value" min="3" max="15" step="2" value="3">
+              </div>
+              <div class="slider-row">
+                <label for="contraQSlider" title="Q (Contra)">Q (Contra)</label>
+                <input type="range" id="contraQSlider" min="-2" max="2" step="0.1" value="1.5">
+                <input type="number" id="contraQValue" class="slider-value" min="-2" max="2" step="0.1" value="1.5">
+              </div>
+            </div>
+          </div>
+
+          <div class="filter-section">
+            <button class="section-header" data-section="freq_restoration">
+              <span class="section-title">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="section-icon">
+                  <path d="M2 10s3-6 5-6 4 12 6 12 4-12 6-12 3 6 3 6"></path>
+                </svg>
+                <span data-i18n="sec_freq_restore">Frequency Restoration</span>
+              </span>
+              <span class="toggle-icon">−</span>
+            </button>
+            <div class="section-content open">
+              <div class="filter-buttons">
+                <button class="filter-btn" data-filter="wienerFilter" data-i18n="btn_wiener">Wiener Filter</button>
+                <button class="filter-btn" data-filter="inverseFilter" data-i18n="btn_inverse">Inverse Filter</button>
+              </div>
+              <div class="slider-row">
+                <label for="wienerKSlider" title="K (SNR Ratio)">K (SNR Ratio)</label>
+                <input type="range" id="wienerKSlider" min="0.001" max="0.1" step="0.001" value="0.01">
+                <input type="number" id="wienerKValue" class="slider-value" min="0.001" max="0.1" step="0.001" value="0.01">
+              </div>
+              <div class="slider-row">
+                <label for="motionAngleSlider" title="Angle" data-i18n="lbl_angle">Angle</label>
+                <input type="range" id="motionAngleSlider" min="0" max="360" step="5" value="45">
+                <input type="number" id="motionAngleValue" class="slider-value" min="0" max="360" step="5" value="45">
+              </div>
+              <div class="slider-row">
+                <label for="motionLenSlider" title="Length" data-i18n="lbl_length">Length</label>
+                <input type="range" id="motionLenSlider" min="1" max="100" step="1" value="20">
+                <input type="number" id="motionLenValue" class="slider-value" min="1" max="100" step="1" value="20">
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- TAB 7: FREQUENCY -->
+        <div class="tab-content" id="frequency-tab">
+          <div class="filter-section">
+            <button class="section-header" data-section="fft">
+              <span class="section-title">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="section-icon">
+                  <line x1="18" y1="20" x2="18" y2="10"></line>
+                  <line x1="12" y1="20" x2="12" y2="4"></line>
+                  <line x1="6" y1="20" x2="6" y2="14"></line>
+                </svg>
+                <span data-i18n="sec_fft">Frequency Domain (FFT)</span>
+              </span>
+              <span class="toggle-icon">−</span>
+            </button>
+            <div class="section-content open">
+              <div class="filter-buttons">
+                <button class="filter-btn" data-filter="fftView" data-i18n="btn_fft_view">FFT Spectrum</button>
+                <button class="filter-btn" data-filter="freqLowpass" data-i18n="btn_lowpass">Lowpass</button>
+                <button class="filter-btn" data-filter="freqHighpass" data-i18n="btn_highpass">Highpass</button>
+                <button class="filter-btn" data-filter="homomorphic" data-i18n="btn_homomorphic">Homomorphic</button>
+              </div>
+              
+              <div class="filter-control-group" style="margin-bottom: 8px;">
+                <label data-i18n="lbl_filter_type" style="font-size: 0.72rem; color: var(--text-secondary);">Filter Type:</label>
+                <select id="freqTypeSelect" class="form-select" style="width: 100%; margin-top: 4px; padding: 4px; font-size: 0.75rem; background-color: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: 4px; color: var(--text-color);">
+                  <option value="ideal" data-i18n="opt_ideal">Ideal</option>
+                  <option value="butterworth" data-i18n="opt_butterworth">Butterworth</option>
+                  <option value="gaussian" data-i18n="opt_gaussian">Gaussian</option>
+                </select>
+              </div>
+
+              <div class="slider-row">
+                <label for="freqCutoffSlider" title="Cutoff" data-i18n="lbl_cutoff">Cutoff</label>
+                <input type="range" id="freqCutoffSlider" min="5" max="200" step="5" value="30">
+                <input type="number" id="freqCutoffValue" class="slider-value" min="5" max="200" step="5" value="30">
+              </div>
+
+              <div id="freqOrderGroup" class="slider-row" style="display: none;">
+                <label for="freqOrderSlider" title="Order" data-i18n="lbl_order">Order</label>
+                <input type="range" id="freqOrderSlider" min="1" max="5" step="1" value="2">
+                <input type="number" id="freqOrderValue" class="slider-value" min="1" max="5" step="1" value="2">
+              </div>
+
+              <!-- Phase 10: Homomorphic Filter sliders -->
+              <div id="homomorphicParamsGroup" style="margin-top: 12px; border-top: 1px dashed var(--border-color); padding-top: 12px; display: none;">
+                <div class="slider-row">
+                  <label for="homomorphicHighSlider" title="Gamma High" data-i18n="lbl_homo_high">Gamma High</label>
+                  <input type="range" id="homomorphicHighSlider" min="1.0" max="3.0" step="0.1" value="1.5">
+                  <input type="number" id="homomorphicHighValue" class="slider-value" min="1.0" max="3.0" step="0.1" value="1.5">
+                </div>
+                <div class="slider-row">
+                  <label for="homomorphicLowSlider" title="Gamma Low" data-i18n="lbl_homo_low">Gamma Low</label>
+                  <input type="range" id="homomorphicLowSlider" min="0.1" max="0.9" step="0.05" value="0.5">
+                  <input type="number" id="homomorphicLowValue" class="slider-value" min="0.1" max="0.9" step="0.05" value="0.5">
+                </div>
+                <div class="slider-row">
+                  <label for="homomorphicCutoffSlider" title="Cutoff (D0)" data-i18n="lbl_homo_cutoff">Cutoff (D0)</label>
+                  <input type="range" id="homomorphicCutoffSlider" min="5" max="100" step="5" value="30">
+                  <input type="number" id="homomorphicCutoffValue" class="slider-value" min="5" max="100" step="5" value="30">
+                </div>
+              </div>
+
+              <p style="font-size: 0.82rem; opacity: 0.6; margin-top: 10px; line-height: 1.5;" data-i18n="desc_fft">
+                Xử lý trong miền tần số cho phép lọc nhiễu và làm nét ảnh một cách mượt mà (G&W Ch. 4).
+              </p>
+            </div> <!-- Đóng section-content open -->
+          </div> <!-- Đóng filter-section -->
+        </div> <!-- Đóng tab-content frequency-tab -->
+      </div> <!-- Đóng properties-module-container -->
+    </div> <!-- Đóng panel-tab-properties -->
+
+        <!-- TAB 2: ANALYSIS (CONTAINS QUALITY EVALUATION AND INTENSITY STATISTICS) -->
+        <div class="panel-tab-content" id="panel-tab-analysis">
+          
+          <!-- Image Metadata Card -->
+          <div class="analysis-metadata-card">
+            <div class="metadata-card-header">
+              <span data-i18n="info_image_metadata">Thông tin ảnh gốc</span>
+            </div>
+            <div class="metadata-grid">
+              <div class="metadata-item">
+                <span class="metadata-label" data-i18n="info_dimensions">Kích thước</span>
+                <span class="metadata-value" id="infoDimensions">-</span>
+              </div>
+              <div class="metadata-item">
+                <span class="metadata-label" data-i18n="info_file_type">Định dạng</span>
+                <span class="metadata-value" id="infoFileType">-</span>
+              </div>
+              <div class="metadata-item">
+                <span class="metadata-label" data-i18n="info_file_size">Dung lượng</span>
+                <span class="metadata-value" id="infoFileSize">-</span>
+              </div>
+              <div class="metadata-item">
+                <span class="metadata-label" data-i18n="info_color_mode">Hệ màu</span>
+                <span class="metadata-value" id="infoColorMode">-</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Quality Evaluation Grid -->
+          <div class="filter-section">
+            <button class="section-header" data-section="metrics">
+              <span class="section-title">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="section-icon">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="16" x2="12" y2="12"></line>
+                  <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
+                <span data-i18n="sec_metrics">Quality Evaluation</span>
+              </span>
+              <span class="toggle-icon">−</span>
+            </button>
+            <div class="section-content open">
+              <div class="metrics-grid">
+                <div class="metric-card" title="Mean Squared Error - Sai số bình phương trung bình (Lower is better)">
+                  <div class="metric-title">MSE</div>
+                  <div class="metric-value" id="valMSE">-</div>
+                </div>
+                <div class="metric-card" title="Peak Signal to Noise Ratio - Tỉ số tín hiệu cực đại trên nhiễu (dB)">
+                  <div class="metric-title">PSNR</div>
+                  <div class="metric-value" id="valPSNR">-</div>
+                </div>
+                <div class="metric-card" id="cardSSIM" title="Structural Similarity Index - Chỉ số tương đồng cấu trúc">
+                  <div class="metric-title">SSIM</div>
+                  <div class="metric-value" id="valSSIM">-</div>
+                </div>
+                <div class="metric-card" id="cardEntropy" title="Shannon Information Entropy - Entropy thông tin Shannon (bits)">
+                  <div class="metric-title">ENT</div>
+                  <div class="metric-value-split">
+                    <div>
+                      <span class="split-label">Org:</span>
+                      <span class="split-val" id="valEntropyOrg">-</span>
+                    </div>
+                    <div>
+                      <span class="split-label">Proc:</span>
+                      <span class="split-val" id="valEntropyProc">-</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Image Intensity Statistics -->
+          <div class="filter-section">
+            <button class="section-header" data-section="image_stats">
+              <span class="section-title">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="section-icon">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                  <line x1="9" y1="3" x2="9" y2="21"></line>
+                  <line x1="15" y1="3" x2="15" y2="21"></line>
+                  <line x1="3" y1="9" x2="21" y2="9"></line>
+                  <line x1="3" y1="15" x2="21" y2="15"></line>
+                </svg>
+                <span data-i18n="sec_statistics">Intensity Statistics</span>
+              </span>
+              <span class="toggle-icon">−</span>
+            </button>
+            <div class="section-content open">
+              <table class="stats-table">
+                <thead>
+                  <tr>
+                    <th>Stat</th>
+                    <th>Original</th>
+                    <th>Processed</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td data-i18n="stat_min">Minimum</td>
+                    <td id="statMinOrg">-</td>
+                    <td id="statMinProc">-</td>
+                  </tr>
+                  <tr>
+                    <td data-i18n="stat_max">Maximum</td>
+                    <td id="statMaxOrg">-</td>
+                    <td id="statMaxProc">-</td>
+                  </tr>
+                  <tr>
+                    <td data-i18n="stat_mean">Mean</td>
+                    <td id="statMeanOrg">-</td>
+                    <td id="statMeanProc">-</td>
+                  </tr>
+                  <tr>
+                    <td data-i18n="stat_stddev">Std Dev</td>
+                    <td id="statStdDevOrg">-</td>
+                    <td id="statStdDevProc">-</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- TAB 3: HISTORY (PROCESS STEPS TIMELINE) -->
+        <div class="panel-tab-content" id="panel-tab-history">
+          <div class="history-timeline-section">
+            <div class="history-timeline-header">
+              <span data-i18n="history_timeline_title">Lịch sử xử lý</span>
+            </div>
+            <div class="history-timeline-container" id="historyTimelineContainer">
+              <!-- Timeline vẽ động bằng JS -->
+            </div>
+          </div>
+        </div>
+
+      </div> <!-- Đóng panel-tab-content-wrapper -->
+
+      <!-- BOTTOM BUTTONS -->
+      <div class="control-bottom">
+        <div class="control-bottom-row">
+          <button id="btnApply" class="btn-apply" title="Áp dụng filter hiện tại (Commit)">
+            <span class="unsaved-dot"></span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            <span data-i18n="btn_apply">Apply</span>
+          </button>
+        </div>
+        <div class="control-bottom-row">
+          <button id="btnReset" class="btn-ghost" title="Reset tất cả thay đổi">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+              <path d="M3 3v5h5"></path>
+            </svg>
+            <span data-i18n="btn_reset">Reset</span>
+          </button>
+        </div>
+        <!-- Keep hidden download button for JS compatibility -->
+        <button id="btnDownloadCurrent" style="display:none;"></button>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- HIDDEN ELEMENTS (for processor.js compatibility) -->
+  <div style="display: none;">
+    <input type="file" id="imageInput" accept="image/*">
+    <button id="themeToggle"></button>
+    <button id="btnSaveHistory"></button>
+    <button id="btnDownloadAll"></button>
+    <div id="historyGallery"></div>
+    <div id="processedContainer"></div>
+    <div id="selectionBox" class="selection-box"></div>
+  </div>
+
+  <script>
+    // ============================================================
+    // TAB SYSTEM & UI INTERACTIONS
+    // ============================================================
+
+    // Theme Toggle
+    const btnTheme = document.getElementById('btnTheme');
+    const moonIcon = document.getElementById('moonIcon');
+    const sunIcon = document.getElementById('sunIcon');
+
+    btnTheme.onclick = function () {
+      document.body.classList.toggle('light-mode');
+      if (document.body.classList.contains('light-mode')) {
+        moonIcon.style.display = 'none';
+        sunIcon.style.display = 'block';
+      } else {
+        moonIcon.style.display = 'block';
+        sunIcon.style.display = 'none';
+      }
+    };
+
+    // Right Panel Tabs switching logic
+    document.querySelectorAll('.panel-tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const tabName = btn.dataset.panelTab;
+        
+        // Deactivate all panel tabs
+        document.querySelectorAll('.panel-tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.panel-tab-content').forEach(t => t.classList.remove('active'));
+        
+        // Activate selected panel tab
+        btn.classList.add('active');
+        const activeTabContent = document.getElementById(`panel-tab-${tabName}`);
+        if (activeTabContent) activeTabContent.classList.add('active');
+      });
+    });
+
+    // Collapsible Sections
+    document.querySelectorAll('.section-header').forEach(header => {
+      header.addEventListener('click', () => {
+        const content = header.nextElementSibling;
+        const icon = header.querySelector('.toggle-icon');
+
+        content.classList.toggle('open');
+        icon.textContent = content.classList.contains('open') ? '−' : '+';
+      });
+    });
+
+    // Image Input & Upload
+    const imgInputEl = document.getElementById('imageInput');
+    const dropzone = document.getElementById('dropzone');
+    const uploadScreen = document.getElementById('uploadScreen');
+    const canvasView = document.getElementById('canvasView');
+    const leftSidebar = document.getElementById('leftSidebar');
+    const myCanvasOrg = document.getElementById('canvasOriginal');
+    const myCanvasProc = document.getElementById('canvasProcessed');
+
+    dropzone.addEventListener('click', () => imgInputEl.click());
+
+    dropzone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropzone.classList.add('drag-over');
+    });
+
+    dropzone.addEventListener('dragleave', () => {
+      dropzone.classList.remove('drag-over');
+    });
+
+    dropzone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropzone.classList.remove('drag-over');
+      if (e.dataTransfer.files.length > 0) {
+        imgInputEl.files = e.dataTransfer.files;
+        imgInputEl.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+    });
+
+    const controlPanel = document.getElementById('controlPanel');
+
+    function showEditorMode() {
+      uploadScreen.style.display = 'none';
+      canvasView.style.display = 'flex';
+      controlPanel.style.display = 'flex';
+      leftSidebar.style.display = 'flex';
+    }
+
+    imgInputEl.addEventListener('change', () => {
+      if (imgInputEl.files && imgInputEl.files.length > 0) {
+        showEditorMode();
+      }
+    });
+
+    window.addEventListener('paste', (e) => {
+      const items = e.clipboardData.items;
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].type.indexOf('image') !== -1) {
+          const blob = items[i].getAsFile();
+          const dt = new DataTransfer();
+          dt.items.add(blob);
+          imgInputEl.files = dt.files;
+          imgInputEl.dispatchEvent(new Event('change', { bubbles: true }));
+          break;
+        }
+      }
+    });
+
+    // ============================================================
+    // STUDIO WORKSPACE (Copy from v1)
+    // ============================================================
+
+    const canvasArea = document.getElementById('canvasArea');
+    const sliderDivider = document.getElementById('sliderDivider');
+    const btnModeSplit = document.getElementById('btnModeSplit');
+    const btnModeSide = document.getElementById('btnModeSide');
+    const btnZoomIn = document.getElementById('btnZoomIn');
+    const btnZoomOut = document.getElementById('btnZoomOut');
+    const btnZoomLabel = document.getElementById('btnZoomLabel');
+    const btnZoomReset = document.getElementById('btnZoomReset');
+
+    let currentZoom = 1.0;
+    let panX = 0;
+    let panY = 0;
+    let sliderPercent = 50;
+    let isPanning = false;
+    let isSliding = false;
+    let startPanX, startPanY;
+    let currentMode = 'split';
+
+    window.addEventListener('canvasResized', () => {
+      updateAll();
+    });
+
+    function applyTransform() {
+      const tOrg = `translate(${panX}px, ${panY}px) scale(${currentZoom})`;
+      myCanvasOrg.style.transform = tOrg;
+
+      let procZoom = currentZoom;
+      if (myCanvasOrg.width && myCanvasProc.width) {
+        procZoom = currentZoom * (myCanvasOrg.width / myCanvasProc.width);
+      }
+      const tProc = `translate(${panX}px, ${panY}px) scale(${procZoom})`;
+      myCanvasProc.style.transform = tProc;
+
+      btnZoomLabel.textContent = Math.round(currentZoom * 100) + '%';
+    }
+
+    function updateSliderClip() {
+      if (currentMode !== 'split') return;
+      sliderDivider.style.left = `${sliderPercent}%`;
+      const areaRect = canvasArea.getBoundingClientRect();
+      const canvasRect = myCanvasProc.getBoundingClientRect();
+      if (canvasRect.width === 0) return;
+      const sliderScreenX = areaRect.left + (sliderPercent / 100) * areaRect.width;
+      let localPercent = ((sliderScreenX - canvasRect.left) / canvasRect.width) * 100;
+      localPercent = Math.max(0, Math.min(100, localPercent));
+      myCanvasProc.style.clipPath = `polygon(${localPercent}% 0, 100% 0, 100% 100%, ${localPercent}% 100%)`;
+    }
+
+    function fitToView() {
+      const imgW = myCanvasOrg.width;
+      const imgH = myCanvasOrg.height;
+      if (!imgW || !imgH) return;
+      const areaRect = canvasArea.getBoundingClientRect();
+      if (!areaRect.width) return;
+      const paneW = currentMode === 'side' ? areaRect.width / 2 : areaRect.width;
+      const paneH = areaRect.height;
+      const padding = 20;
+      const scaleX = (paneW - padding) / imgW;
+      const scaleY = (paneH - padding) / imgH;
+      currentZoom = Math.min(scaleX, scaleY);
+      const scaledW = imgW * currentZoom;
+      const scaledH = imgH * currentZoom;
+      panX = (paneW - scaledW) / 2;
+      panY = (paneH - scaledH) / 2;
+      updateAll();
+    }
+
+    function updateAll() {
+      applyTransform();
+      updateSliderClip();
+    }
+
+    function setMode(mode) {
+      currentMode = mode;
+      if (mode === 'split') {
+        canvasArea.classList.remove('mode-side-by-side');
+        canvasArea.classList.add('mode-split');
+        btnModeSplit.classList.add('active');
+        btnModeSide.classList.remove('active');
+        updateSliderClip();
+      } else {
+        canvasArea.classList.remove('mode-split');
+        canvasArea.classList.add('mode-side-by-side');
+        btnModeSide.classList.add('active');
+        btnModeSplit.classList.remove('active');
+        myCanvasProc.style.clipPath = 'none';
+      }
+    }
+
+    btnModeSplit.addEventListener('click', () => setMode('split'));
+    btnModeSide.addEventListener('click', () => setMode('side'));
+
+    function doZoom(newZoom, pivotX, pivotY) {
+      const prevZoom = currentZoom;
+      currentZoom = Math.min(4.0, Math.max(0.25, newZoom)); // Min 25%, Max 400%
+      const areaRect = canvasArea.getBoundingClientRect();
+      const cx = pivotX !== undefined ? pivotX : areaRect.width / 2;
+      const cy = pivotY !== undefined ? pivotY : areaRect.height / 2;
+      const localX = (cx - panX) / prevZoom;
+      const localY = (cy - panY) / prevZoom;
+      panX = cx - localX * currentZoom;
+      panY = cy - localY * currentZoom;
+      if (currentZoom === 1) { panX = 0; panY = 0; }
+      updateAll();
+    }
+
+    btnZoomIn.addEventListener('click', () => doZoom(currentZoom + 0.1));
+    btnZoomOut.addEventListener('click', () => doZoom(currentZoom - 0.1));
+    
+    // Zoom Label manual click input swap
+    btnZoomLabel.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const input = document.createElement('input');
+      input.type = 'number';
+      input.className = 'zoom-input';
+      input.value = Math.round(currentZoom * 100);
+      input.style.width = '52px';
+      input.style.height = '30px';
+      input.style.textAlign = 'center';
+      input.style.fontSize = '0.8rem';
+      input.style.border = '1px solid var(--accent-color)';
+      input.style.borderRadius = '5px';
+      input.style.backgroundColor = 'var(--bg-tertiary)';
+      input.style.color = 'var(--text-color)';
+      input.style.outline = 'none';
+
+      btnZoomLabel.replaceWith(input);
+      input.focus();
+      input.select();
+
+      const restoreLabel = () => {
+        if (input.parentNode) {
+          input.replaceWith(btnZoomLabel);
+        }
+      };
+
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          const val = parseFloat(input.value);
+          if (!isNaN(val) && val >= 25 && val <= 400) {
+            doZoom(val / 100);
+          }
+          restoreLabel();
+        } else if (e.key === 'Escape') {
+          restoreLabel();
+        }
+      });
+
+      input.addEventListener('blur', () => {
+        restoreLabel();
+      });
+    });
+
+    btnZoomReset.addEventListener('click', () => {
+      currentZoom = 1.0;
+      panX = 0;
+      panY = 0;
+      updateAll();
+    });
+    
+    document.getElementById('btnZoomFit').addEventListener('click', () => fitToView());
+
+    sliderDivider.addEventListener('mousedown', (e) => {
+      if (e.button !== 0) return;
+      isSliding = true;
+      e.stopPropagation();
+    });
+
+    canvasArea.addEventListener('mousedown', (e) => {
+      if (e.button !== 0) return;
+      isPanning = true;
+      startPanX = e.clientX - panX;
+      startPanY = e.clientY - panY;
+      canvasArea.style.cursor = 'grabbing';
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (isSliding) {
+        const areaRect = canvasArea.getBoundingClientRect();
+        let x = e.clientX - areaRect.left;
+        sliderPercent = Math.max(0, Math.min(100, (x / areaRect.width) * 100));
+        updateSliderClip();
+      } else if (isPanning) {
+        panX = e.clientX - startPanX;
+        panY = e.clientY - startPanY;
+        updateAll();
+      }
+    });
+
+    window.addEventListener('mouseup', () => {
+      isSliding = false;
+      if (isPanning) {
+        isPanning = false;
+        canvasArea.style.cursor = '';
+      }
+    });
+
+    canvasArea.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      const step = e.deltaY < 0 ? 0.1 : -0.1;
+      const pane = e.target.closest('.pane') || canvasArea;
+      const rect = pane.getBoundingClientRect();
+      const offsetX = e.clientX - rect.left;
+      const offsetY = e.clientY - rect.top;
+      doZoom(currentZoom + step, offsetX, offsetY);
+    }, { passive: false });
+
+    // Change image button
+    document.getElementById('btnChangeImage').addEventListener('click', () => {
+      imgInputEl.value = '';
+      imgInputEl.click();
+    });
+
+    // Download button (topbar — primary)
+    function doDownload() {
+      if (myCanvasProc.width > 0 && canvasView.style.display !== 'none') {
+        const link = document.createElement('a');
+        link.download = `G_W_PixelLab_${Date.now()}.png`;
+        link.href = myCanvasProc.toDataURL('image/png');
+        link.click();
+      } else {
+        alert('Bạn chưa có ảnh nào để lưu!');
+      }
+    }
+    document.getElementById('btnDownloadTopbar').addEventListener('click', doDownload);
+    // Hidden legacy download button (for JS module compatibility)
+    document.getElementById('btnDownloadCurrent').addEventListener('click', doDownload);
+
+    // ============================================================
+    // LEFT SIDEBAR TOOL SWITCHING
+    // ============================================================
+    document.querySelectorAll('.sidebar-tool[data-tool]').forEach(tool => {
+      tool.addEventListener('click', (e) => {
+        if (tool.disabled || tool.classList.contains('disabled')) {
+          e.preventDefault();
+          e.stopPropagation();
+          return;
+        }
+        const toolName = tool.dataset.tool;
+        
+        // Highlight active sidebar tool
+        document.querySelectorAll('.sidebar-tool[data-tool]').forEach(t => t.classList.remove('active'));
+        tool.classList.add('active');
+
+        if (toolName === 'analysis') {
+          // Tự động kích hoạt Tab lớn ANALYSIS
+          const btnAnalysis = document.querySelector('.panel-tab-btn[data-panel-tab="analysis"]');
+          if (btnAnalysis) btnAnalysis.click();
+        } else {
+          // Tự động kích hoạt Tab lớn PROPERTIES
+          const btnProperties = document.querySelector('.panel-tab-btn[data-panel-tab="properties"]');
+          if (btnProperties) btnProperties.click();
+
+          // Ẩn tất cả các module sliders cũ và chỉ hiện module tương ứng
+          document.querySelectorAll('.properties-module-container .tab-content').forEach(t => t.classList.remove('active'));
+          const matchingTab = document.getElementById(`${toolName}-tab`);
+          if (matchingTab) matchingTab.classList.add('active');
+        }
+      });
+    });
+
+
+    // ============================================================
+    // SAMPLE IMAGES — Procedural generation
+    // ============================================================
+    (function generateSampleThumbnails() {
+      // 1. Gradient
+      const gradCanvas = document.querySelector('#sampleGradient canvas');
+      const gCtx = gradCanvas.getContext('2d');
+      const grad = gCtx.createLinearGradient(0, 0, 72, 72);
+      grad.addColorStop(0, '#667eea');
+      grad.addColorStop(0.5, '#764ba2');
+      grad.addColorStop(1, '#f093fb');
+      gCtx.fillStyle = grad;
+      gCtx.fillRect(0, 0, 72, 72);
+
+      // 2. Checker
+      const checkCanvas = document.querySelector('#sampleChecker canvas');
+      const cCtx = checkCanvas.getContext('2d');
+      const sz = 9;
+      for (let y = 0; y < 72; y += sz) {
+        for (let x = 0; x < 72; x += sz) {
+          cCtx.fillStyle = ((x / sz + y / sz) % 2 === 0) ? '#e0e0e0' : '#4a4a4a';
+          cCtx.fillRect(x, y, sz, sz);
+        }
+      }
+
+      // 3. Color Bars
+      const barCanvas = document.querySelector('#sampleColorBars canvas');
+      const bCtx = barCanvas.getContext('2d');
+      const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff', '#ffffff', '#000000'];
+      const barW = 72 / colors.length;
+      colors.forEach((c, i) => {
+        bCtx.fillStyle = c;
+        bCtx.fillRect(i * barW, 0, barW, 72);
+      });
+
+      // 4. Noise
+      const noiseCanvas = document.querySelector('#sampleNoise canvas');
+      const nCtx = noiseCanvas.getContext('2d');
+      const imgData = nCtx.createImageData(72, 72);
+      for (let i = 0; i < imgData.data.length; i += 4) {
+        const v = Math.floor(Math.random() * 256);
+        imgData.data[i] = v;
+        imgData.data[i + 1] = v;
+        imgData.data[i + 2] = v;
+        imgData.data[i + 3] = 255;
+      }
+      nCtx.putImageData(imgData, 0, 0);
+    })();
+
+    // Sample image click → load into editor
+    function loadSampleImage(thumbCanvas, width, height) {
+      // Create a bigger version (256x256) from the 72x72 thumbnail pattern
+      const bigCanvas = document.createElement('canvas');
+      bigCanvas.width = width;
+      bigCanvas.height = height;
+      const bigCtx = bigCanvas.getContext('2d');
+      bigCtx.imageSmoothingEnabled = false;
+      bigCtx.drawImage(thumbCanvas, 0, 0, width, height);
+
+      bigCanvas.toBlob(blob => {
+        const dt = new DataTransfer();
+        dt.items.add(new File([blob], 'sample.png', { type: 'image/png' }));
+        imgInputEl.files = dt.files;
+        imgInputEl.dispatchEvent(new Event('change', { bubbles: true }));
+      }, 'image/png');
+    }
+
+    document.querySelectorAll('.sample-thumb').forEach(thumb => {
+      thumb.addEventListener('click', () => {
+        const canvas = thumb.querySelector('canvas');
+        if (canvas) loadSampleImage(canvas, 256, 256);
+      });
+    });
+
+  </script>
+
+  <script>
+    // Settings Logic
+    const btnSettings = document.getElementById('btnSettings');
+    const settingsDropdown = document.getElementById('settingsDropdown');
+    
+    btnSettings.addEventListener('click', (e) => {
+      e.stopPropagation(); // Ngăn sự kiện lan ra document
+      settingsDropdown.classList.toggle('show');
+    });
+
+    // Bấm ra ngoài để đóng dropdown
+    document.addEventListener('click', (e) => {
+      if (!settingsDropdown.contains(e.target) && e.target !== btnSettings) {
+        settingsDropdown.classList.remove('show');
+      }
+    });
+
+    // i18n Logic
+    const translations = {
+      vi: {
+        app_title: 'G&W PIXEL LAB v2',
+        app_subtitle: 'Professional Image Processing Studio',
+        settings_title: 'Cài đặt',
+        language_label: 'Ngôn ngữ:',
+        dropzone_text1: 'Kéo thả ảnh vào đây',
+        dropzone_text2: 'hoặc click để chọn file',
+        dropzone_text3: 'hoặc nhấn Ctrl + V',
+        btn_split: 'Chia đôi',
+        btn_side: 'Cạnh nhau',
+        btn_reset: 'Khôi phục',
+        btn_download: 'Tải xuống',
+        tab_basic: 'Cơ bản',
+        tab_edge: 'Biên',
+        tab_color: 'Màu',
+        tab_morph: 'Hình thái',
+        tab_segment: 'Phân đoạn',
+        tab_restore: 'Khôi phục',
+        sec_brightness: 'Độ sáng',
+        sec_contrast: 'Làm nét & Khử nhiễu',
+        btn_denoise_sharpen: 'Khử nhiễu & Làm nét',
+        lbl_strength: 'Mức độ (Strength)',
+        sec_denoise: 'Khử nhiễu',
+        sec_utilities: 'Tiện ích',
+        sec_edges: 'Trích xuất biên',
+        sec_color_restoration: 'Khôi phục màu sắc',
+        sec_white_balance: 'Cân bằng trắng',
+        sec_color_adjust: 'Tùy chỉnh màu sắc',
+        sec_color_space: 'Không gian & Cắt màu',
+        sec_auto_threshold: 'Ngưỡng tự động',
+        sec_region_growing: 'Phát triển vùng & Phân cụm',
+        sec_watershed: 'Phân đoạn Watershed',
+        sec_morph_ops: 'Các phép toán hình thái',
+        lbl_block_size: 'Kích thước khối',
+        desc_morph: 'Opening: Loại bỏ vật thể nhỏ | Closing: Lấp đầy lỗ nhỏ',
+        btn_morph_recon: 'Tái cấu trúc',
+        btn_erosion: 'Bào mòn',
+        btn_dilation: 'Giãn nở',
+        btn_opening: 'Mở (Opening)',
+        btn_closing: 'Đóng (Closing)',
+        btn_adaptive: 'Thích nghi',
+        btn_boundary: 'Trích biên',
+        btn_thinning: 'Làm mảnh',
+        btn_thickening: 'Làm dày',
+        btn_pruning: 'Cắt tỉa',
+        lbl_tolerance: 'Độ lệch',
+        lbl_k_clusters: 'Số cụm (K)',
+        sec_artistic: 'Hiệu ứng nghệ thuật',
+        btn_scan_doc: 'Quét tài liệu',
+        tab_frequency: 'Tần số',
+        sec_fft: 'Miền tần số (FFT)',
+        btn_fft_view: 'Xem phổ FFT',
+        btn_lowpass: 'Thông thấp',
+        btn_highpass: 'Thông cao',
+        lbl_filter_type: 'Loại bộ lọc',
+        opt_ideal: 'Lý tưởng (Ideal)',
+        opt_butterworth: 'Butterworth',
+        opt_gaussian: 'Gaussian',
+        lbl_cutoff: 'Tần số cắt',
+        lbl_order: 'Bậc (Order)',
+        desc_fft: 'Xử lý trong miền tần số cho phép lọc nhiễu và làm nét ảnh một cách mượt mà (G&W Ch. 4).',
+        sec_restoration: 'Phục hồi ảnh',
+        sec_freq_restore: 'Phục hồi tần số',
+        btn_arith_mean: 'Trung bình số học',
+        btn_geo_mean: 'Trung bình nhân',
+        btn_contra_mean: 'Contra-harmonic',
+        btn_adapt_median: 'Median thích nghi',
+        btn_wiener: 'Bộ lọc Wiener',
+        btn_inverse: 'Bộ lọc Inverse',
+        lbl_kernel_size: 'Kích thước nhân',
+        lbl_angle: 'Góc',
+        lbl_length: 'Độ dài',
+        histogram_title: 'Biểu đồ',
+        btn_apply: 'Áp dụng',
+        btn_undo: 'Hoàn tác',
+        btn_redo: 'Làm lại',
+        tab_analysis: 'Phân tích',
+        sec_metrics: 'Đánh giá chất lượng',
+        desc_mse: 'Sai số bình phương trung bình (Càng thấp càng tốt)',
+        desc_psnr: 'Tỉ số tín hiệu cực đại trên nhiễu (dB)',
+        desc_ssim: 'Chỉ số tương đồng cấu trúc',
+        desc_entropy: 'Entropy thông tin Shannon (bits)',
+        sec_statistics: 'Thống kê cường độ sáng',
+        stat_min: 'Tối thiểu (Min)',
+        stat_max: 'Tối đa (Max)',
+        stat_mean: 'Trung bình (Mean)',
+        stat_stddev: 'Độ lệch chuẩn',
+        sec_presets: 'Bộ thiết lập sẵn (Presets)',
+        title_builtin_presets: 'Bộ lọc học thuật Gonzalez & Woods',
+        title_custom_presets: 'Thiết lập sẵn đã lưu của bạn',
+        opt_no_preset: '-- Chọn thiết lập sẵn --',
+        btn_save_preset: 'Lưu',
+        placeholder_preset_name: 'Tên thiết lập sẵn...',
+        sec_hough: 'Phép biến đổi Hough',
+        lbl_hough_lines: 'Số đường thẳng tối đa',
+        btn_homomorphic: 'Bộ lọc đồng cấu',
+        lbl_homo_high: 'Gamma Cao (High)',
+        lbl_homo_low: 'Gamma Thấp (Low)',
+        lbl_homo_cutoff: 'Tần số cắt (D0)',
+        btn_distance_transform: 'Chamfer L1',
+        dropzone_maxsize: 'Tối đa 20MB',
+        sample_title: 'Hoặc thử với ảnh mẫu',
+        sidebar_adjust: 'Điều chỉnh',
+        sidebar_edge: 'Biên',
+        sidebar_color: 'Màu',
+        sidebar_morph: 'Hình thái',
+        sidebar_segment: 'Phân đoạn',
+        sidebar_restore: 'Khôi phục',
+        sidebar_freq: 'Tần số',
+        sidebar_analysis: 'Phân tích',
+        tab_group_basic: 'Cơ bản · Basic',
+        tab_group_advanced: 'Nâng cao · Advanced',
+        tab_group_ai: 'AI · Intel',
+        shortcuts_title: 'Bảng phím tắt',
+        shortcut_undo: 'Hoàn tác (Undo)',
+        shortcut_redo: 'Làm lại (Redo)',
+        shortcut_save: 'Tải xuống (Download)',
+        shortcut_reset: 'Khôi phục ảnh gốc (Reset)',
+        shortcut_toggle_mode: 'Chuyển chế độ Chia đôi / Cạnh nhau',
+        shortcut_help: 'Mở bảng phím tắt này',
+        shortcut_close: 'Đóng bảng phím tắt',
+        export_options_title: 'Tùy chọn xuất ảnh',
+        export_format_lbl: 'Định dạng:',
+        export_quality_lbl: 'Chất lượng:',
+        export_size_estimating: 'Kích thước ước tính: Đang tính...',
+        btn_confirm_export: 'Xuất file',
+        sec_preset_system: 'Thiết lập sẵn (Presets)',
+        preset_default: 'Mặc định',
+        preset_sharp_light: 'Làm nét nhẹ',
+        preset_contrast_boost: 'Tăng tương phản',
+        btn_delete_preset: 'Xóa',
+        panel_tab_properties: 'Thuộc tính',
+        panel_tab_analysis: 'Phân tích',
+        panel_tab_history: 'Lịch sử',
+        history_timeline_title: 'Lịch sử xử lý',
+        info_dimensions: 'Kích thước',
+        info_file_type: 'Định dạng',
+        info_file_size: 'Dung lượng',
+        info_color_mode: 'Hệ màu',
+        info_image_metadata: 'Thông tin ảnh gốc',
+        ai_sync_zoom: 'Đồng bộ Zoom',
+      },
+      en: {
+        app_title: 'G&W PIXEL LAB v2',
+        app_subtitle: 'Professional Image Processing Studio',
+        settings_title: 'Settings',
+        language_label: 'Language:',
+        panel_tab_properties: 'Properties',
+        panel_tab_analysis: 'Analysis',
+        panel_tab_history: 'History',
+        history_timeline_title: 'Processing History',
+        info_dimensions: 'Dimensions',
+        info_file_type: 'Format',
+        info_file_size: 'Size',
+        info_color_mode: 'Color Mode',
+        info_image_metadata: 'Image Metadata',
+        ai_sync_zoom: 'Sync Zoom',
+        dropzone_text1: 'Drag and drop image here',
+        dropzone_text2: 'or click to browse file',
+        dropzone_text3: 'or press Ctrl + V',
+        btn_split: 'Split View',
+        btn_side: 'Side-by-side',
+        btn_reset: 'Reset',
+        btn_download: 'Download',
+        tab_basic: 'Basic',
+        tab_edge: 'Edge',
+        tab_color: 'Color',
+        tab_morph: 'Morph',
+        tab_segment: 'Segment',
+        tab_restore: 'Restore',
+        sec_brightness: 'Brightness',
+        sec_contrast: 'Denoise & Sharpen',
+        btn_denoise_sharpen: 'Denoise & Sharpen',
+        lbl_strength: 'Strength',
+        sec_denoise: 'Denoise',
+        sec_utilities: 'Utilities',
+        sec_edges: 'Edge Detection Filters',
+        sec_color_restoration: 'Color Restoration',
+        sec_white_balance: 'White Balance',
+        sec_color_adjust: 'Color Adjustments',
+        sec_color_space: 'Color Space & Slicing',
+        sec_auto_threshold: 'Auto Threshold',
+        sec_region_growing: 'Region Growing & Clustering',
+        sec_watershed: 'Watershed Segmentation',
+        sec_morph_ops: 'Morphological Operations',
+        lbl_block_size: 'Block Size',
+        desc_morph: 'Opening: Removes small objects | Closing: Fills small holes',
+        btn_morph_recon: 'Morph Recon',
+        btn_erosion: 'Erosion',
+        btn_dilation: 'Dilation',
+        btn_opening: 'Opening',
+        btn_closing: 'Closing',
+        btn_adaptive: 'Adaptive',
+        btn_boundary: 'Boundary',
+        btn_thinning: 'Thinning',
+        btn_thickening: 'Thickening',
+        btn_pruning: 'Pruning',
+        lbl_tolerance: 'Tolerance',
+        lbl_k_clusters: 'K Clusters',
+        sec_artistic: 'Artistic Effects',
+        btn_scan_doc: 'Document Scan',
+        tab_frequency: 'Frequency',
+        sec_fft: 'Frequency Domain (FFT)',
+        btn_fft_view: 'FFT Spectrum',
+        btn_lowpass: 'Lowpass',
+        btn_highpass: 'Highpass',
+        lbl_filter_type: 'Filter Type',
+        opt_ideal: 'Ideal',
+        opt_butterworth: 'Butterworth',
+        opt_gaussian: 'Gaussian',
+        lbl_cutoff: 'Cutoff',
+        lbl_order: 'Order',
+        desc_fft: 'Processing in the frequency domain allows for smooth noise filtering and sharpening (G&W Ch. 4).',
+        sec_restoration: 'Image Restoration',
+        sec_freq_restore: 'Frequency Restoration',
+        btn_arith_mean: 'Arithmetic Mean',
+        btn_geo_mean: 'Geometric Mean',
+        btn_contra_mean: 'Contra-harmonic',
+        btn_adapt_median: 'Adaptive Median',
+        btn_wiener: 'Wiener Filter',
+        btn_inverse: 'Inverse Filter',
+        lbl_kernel_size: 'Kernel Size',
+        lbl_angle: 'Angle',
+        lbl_length: 'Length',
+        histogram_title: 'Histogram',
+        btn_apply: 'Apply',
+        btn_undo: 'Undo',
+        btn_redo: 'Redo',
+        tab_analysis: 'Analysis',
+        sec_metrics: 'Quality Evaluation',
+        desc_mse: 'Mean Squared Error (Lower is better)',
+        desc_psnr: 'Peak Signal to Noise Ratio (dB)',
+        desc_ssim: 'Structural Similarity Index',
+        desc_entropy: 'Shannon Information Entropy (bits)',
+        sec_statistics: 'Luminance Statistics',
+        stat_min: 'Minimum',
+        stat_max: 'Maximum',
+        stat_mean: 'Mean',
+        stat_stddev: 'Std Deviation',
+        sec_presets: 'Presets Manager',
+        title_builtin_presets: 'Gonzalez & Woods Academic Presets',
+        title_custom_presets: 'Saved User Presets',
+        opt_no_preset: '-- Choose a preset --',
+        btn_save_preset: 'Save',
+        placeholder_preset_name: 'Preset name...',
+        sec_hough: 'Hough Transform',
+        lbl_hough_lines: 'Max lines to detect',
+        btn_homomorphic: 'Homomorphic Filter',
+        lbl_homo_high: 'Gamma High',
+        lbl_homo_low: 'Gamma Low',
+        lbl_homo_cutoff: 'Cutoff Frequency (D0)',
+        btn_distance_transform: 'Chamfer L1',
+        dropzone_maxsize: 'Max 20MB',
+        sample_title: 'Or try with sample images',
+        sidebar_adjust: 'Adjust',
+        sidebar_edge: 'Edge',
+        sidebar_color: 'Color',
+        sidebar_morph: 'Morph',
+        sidebar_segment: 'Segment',
+        sidebar_freq: 'Freq',
+        sidebar_analysis: 'Analysis',
+        tab_group_basic: 'Basic',
+        tab_group_advanced: 'Advanced',
+        tab_group_ai: 'AI · Intel',
+        shortcuts_title: 'Keyboard Shortcuts',
+        shortcut_undo: 'Undo (Ctrl+Z)',
+        shortcut_redo: 'Redo (Ctrl+Y)',
+        shortcut_save: 'Download (Ctrl+S)',
+        shortcut_reset: 'Reset original image (Ctrl+R)',
+        shortcut_toggle_mode: 'Toggle Split / Side View (Space)',
+        shortcut_help: 'Open this shortcuts menu (?)',
+        shortcut_close: 'Close shortcuts menu (Esc)',
+        export_options_title: 'Export Options',
+        export_format_lbl: 'Format:',
+        export_quality_lbl: 'Quality:',
+        export_size_estimating: 'Estimated size: Calculating...',
+        btn_confirm_export: 'Export file',
+        sec_preset_system: 'Preset Manager',
+        preset_default: 'Default',
+        preset_sharp_light: 'Light Sharpness',
+        preset_contrast_boost: 'Contrast Booster',
+        btn_save_preset: 'Save',
+        btn_delete_preset: 'Delete',
+      }
+    };
+
+    let currentLang = localStorage.getItem('pixel_lab_lang') || 'vi';
+    const langSelect = document.getElementById('langSelect');
+    langSelect.value = currentLang;
+
+    function applyLanguage(lang) {
+      currentLang = lang;
+      localStorage.setItem('pixel_lab_lang', lang);
+      const dict = translations[lang];
+      if (!dict) return;
+      
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (dict[key]) {
+          el.innerHTML = dict[key];
+        }
+      });
+      document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+        const key = el.getAttribute('data-i18n-placeholder');
+        if (dict[key]) {
+          el.placeholder = dict[key];
+        }
+      });
+    }
+
+    langSelect.addEventListener('change', (e) => applyLanguage(e.target.value));
+    
+    // Apply initial language after small delay to let HTML load fully
+    setTimeout(() => applyLanguage(currentLang), 0);
+  </script>
+
+  <!-- KEYBOARD SHORTCUTS MODAL -->
+  <div id="shortcutsModal" class="shortcuts-modal-overlay">
+    <div class="shortcuts-modal-card">
+      <div class="shortcuts-modal-header">
+        <h3 data-i18n="shortcuts_title">Bảng phím tắt</h3>
+        <button id="btnCloseShortcuts" class="shortcuts-close-btn">&times;</button>
+      </div>
+      <div class="shortcuts-modal-body">
+        <div class="shortcut-list">
+          <div class="shortcut-row">
+            <kbd>Ctrl + Z</kbd>
+            <span data-i18n="shortcut_undo">Hoàn tác (Undo)</span>
+          </div>
+          <div class="shortcut-row">
+            <kbd>Ctrl + Y</kbd>
+            <span data-i18n="shortcut_redo">Làm lại (Redo)</span>
+          </div>
+          <div class="shortcut-row">
+            <kbd>Ctrl + S</kbd>
+            <span data-i18n="shortcut_save">Tải xuống (Download)</span>
+          </div>
+          <div class="shortcut-row">
+            <kbd>Ctrl + R</kbd>
+            <span data-i18n="shortcut_reset">Khôi phục ảnh gốc (Reset)</span>
+          </div>
+          <div class="shortcut-row">
+            <kbd>Space</kbd>
+            <span data-i18n="shortcut_toggle_mode">Chia đôi / Cạnh nhau</span>
+          </div>
+          <div class="shortcut-row">
+            <kbd>?</kbd>
+            <span data-i18n="shortcut_help">Mở bảng phím tắt này</span>
+          </div>
+          <div class="shortcut-row">
+            <kbd>Esc</kbd>
+            <span data-i18n="shortcut_close">Đóng bảng phím tắt</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       AI UPSCALE WORKSPACE ("Căn phòng AI" - Separate Room)
+       ============================================================ -->
+  <div id="aiUpscaleView" class="ai-workspace" style="display: none;">
+    
+    <!-- AI Workspace Sub-Header (compact context bar below main header) -->
+    <div class="ai-workspace-header">
+      <div class="ai-header-left">
+        <button id="btnBackToEditor" class="ai-back-btn" title="Trở về trình chỉnh sửa">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+          <span data-i18n="ai_back_btn">Trở về</span>
+        </button>
+        <div class="ai-header-badge">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path>
+          </svg>
+          <span class="ai-badge-title">AI Upscale Studio</span>
+          <span class="ai-badge-sub">Anime &amp; 2D</span>
+        </div>
+      </div>
+      <div class="ai-header-right" style="display: flex; align-items: center; gap: 12px;">
+        <button id="aiBtnChangeImage" class="ai-change-image-btn" style="display: none;" title="Tải ảnh khác lên">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="17 8 12 3 7 8"></polyline>
+            <line x1="12" y1="3" x2="12" y2="15"></line>
+          </svg>
+          <span data-i18n="ai_change_image_btn">Thay ảnh khác</span>
+        </button>
+        <div class="ai-image-info" id="aiImageInfo" style="display: none;">
+          <span id="aiOriginalSize" class="ai-size-badge">--</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+          <span id="aiResultSize" class="ai-size-badge ai-size-result">--</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI Workspace Main Content -->
+    <div class="ai-workspace-body">
+
+      <!-- ========== AI UPSCALE CONTENT ========== -->
+      <div id="aiUpscaleContent" class="ai-mode-content">
+
+      <!-- AI Upload Screen (shown when no image loaded in AI mode) -->
+      <div id="aiUploadScreen" class="ai-upload-screen">
+        <div class="ai-upload-hero">
+          <div class="ai-upload-icon-wrapper">
+            <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="url(#aiGradient)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <defs>
+                <linearGradient id="aiGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" style="stop-color:#a855f7" />
+                  <stop offset="50%" style="stop-color:#6366f1" />
+                  <stop offset="100%" style="stop-color:#06b6d4" />
+                </linearGradient>
+              </defs>
+              <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path>
+              <path d="M5 3v4M3 5h4M19 17v4M17 19h4"></path>
+            </svg>
+          </div>
+          <h2 class="ai-upload-title" data-i18n="ai_upload_title">Chào mừng đến AI Upscale Studio</h2>
+          <p class="ai-upload-desc" data-i18n="ai_upload_desc">Tải ảnh anime hoặc tranh 2D để bắt đầu nâng cấp chất lượng bằng AI</p>
+          <div id="aiDropzone" class="ai-dropzone">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="17 8 12 3 7 8"></polyline>
+              <line x1="12" y1="3" x2="12" y2="15"></line>
+            </svg>
+            <span data-i18n="ai_dropzone_text">Kéo thả ảnh vào đây hoặc click để chọn</span>
+            <span class="ai-dropzone-formats">JPG · PNG · WEBP · Tối đa 20MB</span>
+          </div>
+          <button id="aiBtnUseCurrentImage" class="ai-btn-use-current" style="display: none;" data-i18n="ai_use_current">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+              <circle cx="8.5" cy="8.5" r="1.5"></circle>
+              <polyline points="21 15 16 10 5 21"></polyline>
+            </svg>
+            Sử dụng ảnh đang chỉnh sửa
+          </button>
+        </div>
+
+        <!-- Model Cards Info -->
+        <div class="ai-model-showcase">
+          <h3 class="ai-showcase-title" data-i18n="ai_models_title">Công nghệ AI có sẵn</h3>
+          <div class="ai-model-cards">
+            <div class="ai-model-card" data-model="anime4k">
+              <div class="ai-model-card-icon">⚡</div>
+              <h4>Anime4K</h4>
+              <p>Siêu nhanh · WebGL Shader</p>
+              <span class="ai-model-badge ai-badge-fast">Realtime</span>
+            </div>
+            <div class="ai-model-card" data-model="waifu2x">
+              <div class="ai-model-card-icon">🎨</div>
+              <h4>Waifu2x</h4>
+              <p>Khử nhiễu mạnh · Offline</p>
+              <span class="ai-model-badge ai-badge-quality">Chất lượng</span>
+            </div>
+            <div class="ai-model-card" data-model="realesrgan">
+              <div class="ai-model-card-icon">🌟</div>
+              <h4>Real-ESRGAN</h4>
+              <p>Anime chuyên dụng · AI mạnh</p>
+              <span class="ai-model-badge ai-badge-best">Tốt nhất</span>
+            </div>
+            <div class="ai-model-card" data-model="cugan">
+              <div class="ai-model-card-icon">💎</div>
+              <h4>CUGAN</h4>
+              <p>Chất lượng Studio · GPU</p>
+              <span class="ai-model-badge ai-badge-pro">Pro</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI Processing View (shown when image is loaded) -->
+      <div id="aiProcessingView" class="ai-processing-view" style="display: none;">
+
+        <!-- AI Canvas Area (Split/Side-by-side View) -->
+        <div class="ai-canvas-area">
+          <div class="ai-canvas-toolbar">
+            <div class="btn-group">
+              <button id="aiBtnModeSplit" class="mode-btn" data-i18n="btn_split">Chia đôi</button>
+              <button id="aiBtnModeSide" class="mode-btn active" data-i18n="btn_side">Cạnh nhau</button>
+            </div>
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <label class="ai-sync-zoom-label">
+                <input type="checkbox" id="aiCbSyncZoom" checked>
+                <span data-i18n="ai_sync_zoom">Đồng bộ Zoom</span>
+              </label>
+              <div class="zoom-controls">
+                <button id="aiBtnZoomOut" class="zoom-btn" title="Thu nhỏ">−</button>
+                <button id="aiBtnZoomLabel" class="zoom-label">100%</button>
+                <button id="aiBtnZoomIn" class="zoom-btn" title="Phóng to">+</button>
+                <button id="aiBtnZoomFit" class="zoom-btn" title="Fit to screen">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 14h6v6M20 10h-6V4M14 10l7-7M10 14l-7 7"></path>
+                  </svg>
+                </button>
+                <button id="aiBtnZoomReset" class="zoom-btn" title="Reset 100%">⊡</button>
+              </div>
+            </div>
+          </div>
+          <div class="ai-canvas-container mode-side-by-side" id="aiCanvasContainer">
+            <div class="ai-pane ai-pane-original">
+              <span class="ai-pane-label">Gốc (Original)</span>
+              <canvas id="aiCanvasOriginal"></canvas>
+            </div>
+            <div class="ai-pane ai-pane-result">
+              <span class="ai-pane-label ai-pane-label-right">Kết quả AI</span>
+              <canvas id="aiCanvasResult"></canvas>
+            </div>
+            <div class="ai-slider-divider" id="aiSliderDivider">
+              <div class="ai-slider-thumb">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- AI Control Panel (Right side) -->
+        <div class="ai-control-panel">
+          <div class="ai-panel-section">
+            <h3 class="ai-panel-title">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+              </svg>
+              Cài đặt Upscale
+            </h3>
+          </div>
+
+          <!-- Model Selection -->
+          <div class="ai-panel-section">
+            <label class="ai-label">Mô hình AI</label>
+            <div class="ai-model-select-grid" id="aiModelSelect">
+              <button class="ai-model-option active" data-ai-model="anime4k">
+                <span class="ai-model-opt-icon">⚡</span>
+                <span class="ai-model-opt-name">Anime4K</span>
+                <span class="ai-model-opt-desc">Realtime</span>
+              </button>
+              <button class="ai-model-option" data-ai-model="waifu2x">
+                <span class="ai-model-opt-icon">🎨</span>
+                <span class="ai-model-opt-name">Waifu2x</span>
+                <span class="ai-model-opt-desc">Đẹp</span>
+              </button>
+              <button class="ai-model-option" data-ai-model="realesrgan">
+                <span class="ai-model-opt-icon">🌟</span>
+                <span class="ai-model-opt-name">Real-ESRGAN</span>
+                <span class="ai-model-opt-desc">Tốt nhất</span>
+              </button>
+              <button class="ai-model-option" data-ai-model="cugan">
+                <span class="ai-model-opt-icon">💎</span>
+                <span class="ai-model-opt-name">CUGAN</span>
+                <span class="ai-model-opt-desc">Pro</span>
+              </button>
+              <button class="ai-model-option" data-ai-model="denoiseSharp">
+                <span class="ai-model-opt-icon">✨</span>
+                <span class="ai-model-opt-name">Sharpness</span>
+                <span class="ai-model-opt-desc">Làm nét</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Scale Selection -->
+          <div class="ai-panel-section" id="aiScaleSection">
+            <label class="ai-label">Tỉ lệ phóng đại</label>
+            <div class="ai-scale-buttons" id="aiScaleSelect">
+              <button class="ai-scale-btn active" data-scale="2">2x</button>
+              <button class="ai-scale-btn" data-scale="4">4x</button>
+            </div>
+            <div class="ai-output-preview" id="aiOutputPreview">
+              <span class="ai-output-label">Kết quả:</span>
+              <span class="ai-output-value" id="aiOutputDimensions">-- × -- px</span>
+            </div>
+          </div>
+
+          <!-- Denoise Level -->
+          <div class="ai-panel-section" id="aiDenoiseSection">
+            <label class="ai-label">Khử nhiễu (Denoise)</label>
+            <div class="ai-slider-row">
+              <input type="range" id="aiDenoiseSlider" min="0" max="3" step="1" value="1" class="ai-slider">
+              <span id="aiDenoiseValue" class="ai-slider-value">1</span>
+            </div>
+            <div class="ai-denoise-labels">
+              <span>Không</span>
+              <span>Nhẹ</span>
+              <span>Trung bình</span>
+              <span>Mạnh</span>
+            </div>
+          </div>
+
+          <!-- Sharpness Settings (Only shown for denoiseSharp model) -->
+          <div class="ai-panel-section" id="aiSharpnessSection" style="display: none;">
+            <div class="ai-slider-row" style="margin-bottom: 12px;">
+              <label class="ai-slider-label">📊 Mức độ làm nét (Strength)</label>
+              <div class="ai-slider-control">
+                <input type="range" id="aiSharpnessStrengthSlider" class="ai-range-input" min="0" max="100" value="50">
+                <span id="aiSharpnessStrengthValue" class="ai-slider-value">50%</span>
+              </div>
+            </div>
+            <div class="ai-slider-row">
+              <label class="ai-slider-label">📏 Bán kính (Radius)</label>
+              <div class="ai-slider-control">
+                <input type="range" id="aiSharpnessRadiusSlider" class="ai-range-input" min="1" max="5" value="2">
+                <span id="aiSharpnessRadiusValue" class="ai-slider-value">2px</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="ai-panel-section ai-actions">
+            <button id="aiBtnStartUpscale" class="ai-btn-start" disabled>
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path>
+              </svg>
+              <span data-i18n="ai_btn_start">Bắt đầu Upscale</span>
+            </button>
+            
+            <!-- Progress Bar -->
+            <div id="aiProgressContainer" class="ai-progress-container" style="display: none;">
+              <div class="ai-progress-bar">
+                <div class="ai-progress-fill" id="aiProgressFill"></div>
+              </div>
+              <span class="ai-progress-text" id="aiProgressText">Đang xử lý... 0%</span>
+            </div>
+
+            <div class="ai-action-row" id="aiResultActions" style="display: none;">
+              <button id="aiBtnApplyReturn" class="ai-btn-apply">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                <span data-i18n="btn_apply">Áp dụng</span>
+              </button>
+              <button id="aiBtnDownloadAI" class="ai-btn-download">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="7 10 12 15 17 10"></polyline>
+                  <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                <span data-i18n="ai_btn_download">Tải xuống</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Model Info -->
+          <div class="ai-panel-section ai-model-info-panel" id="aiModelInfoPanel">
+            <div class="ai-info-card">
+              <div class="ai-info-header" id="aiInfoModelName">
+                <span class="ai-info-icon">⚡</span>
+                <span>Anime4K</span>
+              </div>
+              <p class="ai-info-desc" id="aiInfoModelDesc">
+                Sử dụng WebGL Shader để phóng đại ảnh anime cực nhanh. 
+                Phù hợp cho phóng to thời gian thực với chất lượng tốt.
+              </p>
+              <div class="ai-info-tags">
+                <span class="ai-tag" id="aiInfoSpeed">⚡ &lt;15ms</span>
+                <span class="ai-tag" id="aiInfoType">🌐 Client-side</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      </div><!-- /aiUpscaleContent -->
+
+    </div>
+  </div>
+
+  <!-- ============================================================
+       DOCUMENT TEXT EXTRACTION WORKSPACE
+       ============================================================ -->
+  <div id="docWorkspace" class="doc-workspace" style="display: none;">
+
+    <!-- Document Workspace Header (simplified) -->
+    <div class="doc-workspace-header">
+      <div class="doc-header-left">
+        <button id="btnBackFromDoc" class="doc-back-btn" title="Trở về trình chỉnh sửa">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+          <span data-i18n="doc_back_btn">Trở về</span>
+        </button>
+        <div class="doc-header-badge">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+          </svg>
+          <span class="doc-badge-title">Document</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Document 2-Column Content -->
+    <div class="doc-content">
+      <div class="doc-grid-container">
+
+        <!-- LEFT PANEL: Controls -->
+        <div class="doc-left-panel">
+
+          <!-- SOURCE Section: Paste / Drop Zone -->
+          <div class="doc-section">
+            <h3 class="doc-section-title">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                <polyline points="21 15 16 10 5 21"></polyline>
+              </svg>
+              SOURCE
+            </h3>
+
+            <!-- Paste Zone: click to focus, then Ctrl+V or drag-drop -->
+            <div id="docPasteZone" class="doc-paste-zone" tabindex="0">
+              <!-- Empty state -->
+              <div id="docPasteZoneEmpty" class="doc-paste-zone-empty">
+                <svg class="doc-paste-zone-icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                  <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                  <rect x="8" y="12" width="8" height="2" rx="1"></rect>
+                  <rect x="8" y="16" width="5" height="2" rx="1"></rect>
+                </svg>
+                <span class="doc-paste-zone-title">Paste or Drop Image</span>
+                <span class="doc-paste-zone-subtitle">Click here, then <kbd>Ctrl+V</kbd></span>
+                <span class="doc-paste-zone-subtitle">or drag &amp; drop an image</span>
+              </div>
+
+              <!-- Preview state (shown when image is loaded) -->
+              <div id="docPasteZonePreview" class="doc-paste-zone-preview" style="display: none;">
+                <img id="docPreviewThumbnail" class="doc-paste-zone-thumb" alt="Preview">
+                <div class="doc-paste-zone-info">
+                  <span id="docPreviewName" class="doc-preview-name"></span>
+                  <span id="docPreviewMeta" class="doc-preview-meta"></span>
+                </div>
+                <button type="button" id="btnDocRemovePreview" class="doc-paste-zone-remove" title="Remove image">✕</button>
+              </div>
+            </div>
+
+            <!-- Browse file button (separate, below paste zone) -->
+            <label class="doc-browse-file-btn">
+              <input type="file" id="docFileInput" accept="image/*" style="display: none;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="17 8 12 3 7 8"></polyline>
+                <line x1="12" y1="3" x2="12" y2="15"></line>
+              </svg>
+              Browse files...
+            </label>
+          </div>
+
+          <!-- LANGUAGE Section -->
+          <div class="doc-section">
+            <h3 class="doc-section-title">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="2" y1="12" x2="22" y2="12"></line>
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+              </svg>
+              LANGUAGE
+            </h3>
+            <select id="docLanguage" class="doc-select">
+              <option value="eng">English</option>
+              <option value="vie">Tiếng Việt</option>
+            </select>
+          </div>
+
+          <!-- OUTPUT FORMAT Section -->
+          <div class="doc-section">
+            <h3 class="doc-section-title">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 22h14a2 2 0 0 0 2-2V7.5L14.5 2H6a2 2 0 0 0-2 2v4"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <path d="M3 15h6"></path>
+                <path d="M6 12v6"></path>
+              </svg>
+              OUTPUT FORMAT
+            </h3>
+            <div class="doc-radio-group">
+              <label class="doc-radio-label">
+                <input type="radio" name="docFormat" id="docFormatTxt" value="txt" checked>
+                <span class="doc-radio-custom"></span>
+                TXT
+              </label>
+              <label class="doc-radio-label">
+                <input type="radio" name="docFormat" id="docFormatMd" value="md">
+                <span class="doc-radio-custom"></span>
+                Markdown
+              </label>
+            </div>
+          </div>
+
+          <!-- Extract Button -->
+          <button id="btnExtractText" class="doc-extract-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+            </svg>
+            Extract Text
+          </button>
+
+          <!-- Progress Bar -->
+          <div id="docProgressContainer" class="doc-progress-container" style="display: none;">
+            <div class="doc-progress-bar">
+              <div id="docProgressFill" class="doc-progress-fill"></div>
+            </div>
+            <span id="docProgressText" class="doc-progress-text">Đang khởi tạo...</span>
+          </div>
+
+          <!-- Hint (always visible, below extract button) -->
+          <div id="docHint" class="doc-hint">💡 Dùng Tab Basic → Threshold / Denoise để OCR chính xác hơn</div>
+
+        </div>
+
+        <!-- RIGHT PANEL: Text Editor -->
+        <div class="doc-right-panel">
+
+          <!-- Recognized Text Label -->
+          <h3 class="doc-section-title">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+            </svg>
+            RECOGNIZED TEXT
+          </h3>
+
+          <!-- Textarea (large, resizable) -->
+          <textarea id="docTextarea" class="doc-textarea" placeholder="Extracted text will appear here" spellcheck="false"></textarea>
+
+          <!-- Action Toolbar -->
+          <div id="docActionButtons" class="doc-action-toolbar" style="display: none;">
+            <button id="btnDocCopy" class="doc-action-btn doc-btn-copy" title="Copy to clipboard">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+              Copy
+            </button>
+            <button id="btnDocSaveTxt" class="doc-action-btn doc-btn-save" title="Save as TXT">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              Save TXT
+            </button>
+            <button id="btnDocSaveMd" class="doc-action-btn doc-btn-save" title="Save as Markdown">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              Save MD
+            </button>
+            <button id="btnDocClear" class="doc-action-btn doc-btn-clear" title="Clear text">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+              </svg>
+              Clear
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Phase 6: Modular JS Entry -->
+  <script type="module" src="js/main.js"></script>
+
+</body>
+
+</html>
