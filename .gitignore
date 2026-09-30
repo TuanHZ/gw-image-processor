@@ -2,3 +2,5 @@
 __pycache__/
 *.pyc
 .vscode/
+node_modules/
+gw_image_processor/node_modules/
