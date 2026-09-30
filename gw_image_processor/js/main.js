@@ -63,21 +63,8 @@ document.addEventListener('DOMContentLoaded', () => {
     state.homomorphicLow = 0.5;
     state.homomorphicCutoff = 30;
 
-    // Reset slider elements in UI to match default state
-    document.querySelectorAll('.tab-content-wrapper input[type="range"]').forEach(slider => {
-      const defaultValue = slider.getAttribute('value') || slider.getAttribute('min') || "0";
-      slider.value = defaultValue;
-      
-      const valueBoxId = slider.id.replace('Slider', 'Value');
-      const valueBox = document.getElementById(valueBoxId);
-      if (valueBox) {
-        if (valueBox.tagName === 'INPUT') {
-          valueBox.value = defaultValue;
-        } else {
-          valueBox.innerText = defaultValue;
-        }
-      }
-    });
+    // The UI elements (sliders and value displays) will now automatically update
+    // to match the default state due to the Pub-Sub pattern implemented in state.js
 
     document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active-filter'));
     canvasProc.style.cursor = 'default';

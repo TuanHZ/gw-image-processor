@@ -1,4 +1,4 @@
-import { state, saveState } from '../core/state.js';
+import { state, saveState, subscribe } from '../core/state.js';
 import { globals, imageInput, canvasProc, ctxProc } from '../core/constants.js';
 import { loadImageFromFile, showProcessingAndUpdate, saveToHistory, commitCurrentState, performUndo, performRedo } from './canvas.js';
 import { downloadURI, debounce } from '../core/utils.js';
@@ -22,28 +22,38 @@ export function setupEventListeners() {
     const slider = document.getElementById(id);
     const valueDisp = document.getElementById(valueId);
     if (!slider) return;
-    
-    const updateValueDisp = (val) => {
-      if (!valueDisp) return;
-      if (valueDisp.tagName === 'INPUT') {
-        valueDisp.value = val;
-      } else {
-        valueDisp.innerText = val;
-      }
-    };
 
     if (state[stateKey] !== undefined) {
       slider.value = state[stateKey];
-      updateValueDisp(state[stateKey]);
+      if (valueDisp) {
+        if (valueDisp.tagName === 'INPUT') {
+          valueDisp.value = state[stateKey];
+        } else {
+          valueDisp.innerText = state[stateKey];
+        }
+      }
     }
     
+    // Subscribe to state changes to update the UI
+    subscribe((property, value) => {
+      if (property === stateKey) {
+        slider.value = value;
+        if (valueDisp) {
+          if (valueDisp.tagName === 'INPUT') {
+            valueDisp.value = value;
+          } else {
+            valueDisp.innerText = value;
+          }
+        }
+      }
+    });
+
     const debouncedPreview = debounce(() => {
       if (globals.originalImageData) showProcessingAndUpdate(false, true);
     }, 150);
 
     slider.addEventListener('input', (e) => {
       state[stateKey] = parseFloat(e.target.value);
-      updateValueDisp(e.target.value);
       setHasChanges(true);
       debouncedPreview();
     });
@@ -56,12 +66,13 @@ export function setupEventListeners() {
     if (valueDisp && valueDisp.tagName === 'INPUT') {
       valueDisp.addEventListener('input', (e) => {
         let val = parseFloat(e.target.value);
-        if (isNaN(val)) return;
+        if (isNaN(val)) return; // Prevent intermediate NaN states (e.g. empty box) from propagating
         
         const min = parseFloat(slider.min) ?? 0;
         const max = parseFloat(slider.max) ?? 100;
         const clamped = Math.max(min, Math.min(max, val));
-        slider.value = clamped;
+
+        // This triggers the proxy which calls subscribe, updating the slider
         state[stateKey] = clamped;
         
         setHasChanges(true);
@@ -74,13 +85,14 @@ export function setupEventListeners() {
         const max = parseFloat(slider.max) ?? 100;
         
         if (isNaN(val)) {
-          val = parseFloat(slider.value) || min;
+          // Revert to old value which updates the input box back to normal
+          val = state[stateKey];
+          e.target.value = val;
+        } else {
+          val = Math.max(min, Math.min(max, val));
+          state[stateKey] = val;
         }
-        
-        const clamped = Math.max(min, Math.min(max, val));
-        valueDisp.value = clamped;
-        slider.value = clamped;
-        state[stateKey] = clamped;
+
         if (globals.originalImageData) showProcessingAndUpdate();
       });
     }
